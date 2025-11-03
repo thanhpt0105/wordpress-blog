@@ -1,0 +1,26 @@
+{
+	"version": 3,
+	"title": "Solarized",
+	"slug": "solarized",
+	"settings": {
+		"color": {
+			"palette": [
+				{ "slug": "primary", "color": "#268bd2" },
+				{ "slug": "accent", "color": "#b58900" },
+				{ "slug": "neutral-0", "color": "#fdf6e3" },
+				{ "slug": "neutral-5", "color": "#eee8d5" },
+				{ "slug": "neutral-10", "color": "#e0d9bf" },
+				{ "slug": "neutral-40", "color": "#93a1a1" },
+				{ "slug": "neutral-60", "color": "#657b83" },
+				{ "slug": "neutral-80", "color": "#586e75" },
+				{ "slug": "neutral-100", "color": "#073642" }
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--neutral-0)",
+			"text": "var(--wp--preset--color--neutral-80)"
+		}
+	}
+}

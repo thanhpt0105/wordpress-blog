@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This WXR file provides sample content for Custom Theme 2. -->
+<rss version="2.0"
+	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wp="http://wordpress.org/export/1.2/"
+>
+	<channel>
+		<title>Custom Theme 2 Demo</title>
+		<link>https://example.com</link>
+		<description>Sample content for Custom Theme 2.</description>
+		<pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+		<language>en</language>
+		<wp:wxr_version>1.2</wp:wxr_version>
+		<wp:base_site_url>https://example.com</wp:base_site_url>
+		<wp:base_blog_url>https://example.com</wp:base_blog_url>
+
+		<wp:author><wp:author_id>1</wp:author_id><wp:author_login><![CDATA[demo]]></wp:author_login><wp:author_email><![CDATA[demo@example.com]]></wp:author_email><wp:author_display_name><![CDATA[Demo Author]]></wp:author_display_name><wp:author_first_name><![CDATA[Demo]]></wp:author_first_name><wp:author_last_name><![CDATA[Author]]></wp:author_last_name></wp:author>
+
+		<wp:category><wp:term_id>1</wp:term_id><wp:category_nicename><![CDATA[announcements]]></wp:category_nicename><wp:cat_name><![CDATA[Announcements]]></wp:cat_name></wp:category>
+		<wp:category><wp:term_id>2</wp:term_id><wp:category_nicename><![CDATA[deep-dives]]></wp:category_nicename><wp:cat_name><![CDATA[Deep Dives]]></wp:cat_name></wp:category>
+		<wp:tag><wp:term_id>3</wp:term_id><wp:tag_slug><![CDATA[series]]></wp:tag_slug><wp:tag_name><![CDATA[Series]]></wp:tag_name></wp:tag>
+
+		<item>
+			<title>Welcome to Custom Theme 2</title>
+			<link>https://example.com/welcome-to-custom-theme-2</link>
+			<pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+			<dc:creator><![CDATA[demo]]></dc:creator>
+			<guid isPermaLink="false">https://example.com/?post_type=post&amp;p=1</guid>
+			<description></description>
+			<content:encoded><![CDATA[<!-- wp:paragraph {"fontSize":"lead"} --><p class="has-lead-font-size">This demo post shows how typography and spacing shine in Custom Theme 2.</p><!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2} --><h2>Comfort-first reading</h2><!-- /wp:heading -->
+
+<!-- wp:paragraph --><p>Use global styles to tune type scales and color palettes instantly. The included patterns make it easy to assemble long-form posts.</p><!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2} --><h2>Built-in niceties</h2><!-- /wp:heading -->
+
+<!-- wp:paragraph --><p>Reading progress, table of contents, and share links are all bundled without third-party bloat.</p><!-- /wp:paragraph -->]]></content:encoded>
+			<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+			<wp:post_id>1</wp:post_id>
+			<wp:post_date>2024-01-01 00:00:00</wp:post_date>
+			<wp:post_date_gmt>2024-01-01 00:00:00</wp:post_date_gmt>
+			<wp:post_modified>2024-01-01 00:00:00</wp:post_modified>
+			<wp:post_modified_gmt>2024-01-01 00:00:00</wp:post_modified_gmt>
+			<wp:comment_status>open</wp:comment_status>
+			<wp:ping_status>open</wp:ping_status>
+			<wp:post_name><![CDATA[welcome-to-custom-theme-2]]></wp:post_name>
+			<wp:status>publish</wp:status>
+			<wp:post_parent>0</wp:post_parent>
+			<wp:menu_order>0</wp:menu_order>
+			<wp:post_type>post</wp:post_type>
+			<wp:post_password></wp:post_password>
+			<wp:is_sticky>0</wp:is_sticky>
+			<category domain="category" nicename="announcements"><![CDATA[Announcements]]></category>
+			<category domain="post_tag" nicename="series"><![CDATA[Series]]></category>
+		</item>
+
+		<item>
+			<title>About the author</title>
+			<link>https://example.com/about/</link>
+			<pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+			<dc:creator><![CDATA[demo]]></dc:creator>
+			<guid isPermaLink="false">https://example.com/?page_id=2</guid>
+			<description></description>
+			<content:encoded><![CDATA[<!-- wp:pattern {"slug":"custom-theme-2/about-author"} /-->
+
+<!-- wp:paragraph --><p>Swap in your own bio, photo, and links to personalize the site.</p><!-- /wp:paragraph -->]]></content:encoded>
+			<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+			<wp:post_id>2</wp:post_id>
+			<wp:post_date>2024-01-01 00:00:00</wp:post_date>
+			<wp:post_date_gmt>2024-01-01 00:00:00</wp:post_date_gmt>
+			<wp:post_modified>2024-01-01 00:00:00</wp:post_modified>
+			<wp:post_modified_gmt>2024-01-01 00:00:00</wp:post_modified_gmt>
+			<wp:comment_status>closed</wp:comment_status>
+			<wp:ping_status>closed</wp:ping_status>
+			<wp:post_name><![CDATA[about]]></wp:post_name>
+			<wp:status>publish</wp:status>
+			<wp:post_parent>0</wp:post_parent>
+			<wp:menu_order>0</wp:menu_order>
+			<wp:post_type>page</wp:post_type>
+			<wp:post_password></wp:post_password>
+			<wp:is_sticky>0</wp:is_sticky>
+		</item>
+	</channel>
+</rss>

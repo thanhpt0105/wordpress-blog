@@ -1,0 +1,33 @@
+{
+	"version": 3,
+	"title": "High Contrast",
+	"slug": "high-contrast",
+	"settings": {
+		"color": {
+			"palette": [
+				{ "slug": "primary", "color": "#0000ff" },
+				{ "slug": "accent", "color": "#ff00ff" },
+				{ "slug": "neutral-0", "color": "#ffffff" },
+				{ "slug": "neutral-5", "color": "#f0f0f0" },
+				{ "slug": "neutral-10", "color": "#e0e0e0" },
+				{ "slug": "neutral-40", "color": "#707070" },
+				{ "slug": "neutral-60", "color": "#404040" },
+				{ "slug": "neutral-80", "color": "#202020" },
+				{ "slug": "neutral-100", "color": "#000000" }
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--neutral-0)",
+			"text": "var(--wp--preset--color--neutral-100)"
+		},
+		"elements": {
+			"link": {
+				"color": {
+					"text": "var(--wp--preset--color--accent)"
+				}
+			}
+		}
+	}
+}

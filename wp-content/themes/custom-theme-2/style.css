@@ -1,0 +1,307 @@
+/*
+Theme Name: Custom Theme 2
+Theme URI: https://example.com/custom-theme-2
+Author: Codex Team
+Author URI: https://example.com
+Description: Modern, typography-first personal blog block theme focused on performance, accessibility, and flexible storytelling.
+Requires at least: 6.6
+Tested up to: 6.6
+Requires PHP: 8.2
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: acme
+Tags: blog, full-site-editing, accessibility-ready, custom-colors, custom-block-patterns, editor-style, wide-blocks
+*/
+
+/* Critical base styles kept intentionally lean. */
+
+:root {
+	--acme-border-radius-sm: 0.25rem;
+	--acme-border-radius: 0.5rem;
+	--acme-border-radius-lg: 1rem;
+	--acme-transition: 200ms ease;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+.acme-skip-link {
+	position: absolute;
+	top: -100%;
+	left: 0.5rem;
+	padding: 0.75rem 1rem;
+	background: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--neutral-0);
+	border-radius: var(--acme-border-radius);
+	z-index: 999;
+	transition: top var(--acme-transition);
+}
+
+.acme-skip-link:focus {
+	top: 1rem;
+}
+
+.acme-progress {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 4px;
+	width: 0;
+	background: var(--wp--preset--color--accent);
+	z-index: 9999;
+	transition: width 120ms linear;
+}
+
+.acme-dark-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	border-radius: 999px;
+	padding: 0.25rem 0.75rem;
+	background: transparent;
+	color: inherit;
+	border: 1px solid currentColor;
+	cursor: pointer;
+	font: inherit;
+	transition: background var(--acme-transition), color var(--acme-transition), border var(--acme-transition);
+}
+
+.acme-dark-toggle:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 3px;
+}
+
+.acme-mobile-nav-toggle {
+	background: transparent;
+	border: 0;
+	height: 44px;
+	width: 44px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--acme-border-radius);
+	cursor: pointer;
+}
+
+.acme-mobile-nav-toggle:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 3px;
+}
+
+.acme-offcanvas {
+	position: fixed;
+	top: 0;
+	right: -100%;
+	width: min(320px, 90vw);
+	height: 100vh;
+	background: var(--wp--preset--color--neutral-100);
+	color: var(--wp--preset--color--neutral-10);
+	box-shadow: -24px 0 48px rgba(0, 0, 0, 0.12);
+	transition: right var(--acme-transition);
+	z-index: 9998;
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem;
+}
+
+.acme-offcanvas.is-open {
+	right: 0;
+}
+
+.acme-offcanvas a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.acme-offcanvas .wp-block-navigation__container {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.acme-offcanvas-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.55);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity var(--acme-transition);
+	z-index: 9997;
+}
+
+.acme-offcanvas-overlay.is-active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.acme-offcanvas__footer-text,
+.acme-offcanvas__footer-title {
+	margin: 0;
+	color: var(--wp--preset--color--neutral-40);
+}
+
+.acme-offcanvas__footer-text {
+	margin-top: auto;
+	display: block;
+}
+
+.acme-copy-heading {
+	position: absolute;
+	top: 0.25rem;
+	right: 0;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	padding: 0.25rem;
+	border-radius: var(--acme-border-radius-sm);
+	opacity: 0;
+	transition: opacity var(--acme-transition);
+}
+
+.entry-content :is(h2, h3, h4, h5, h6):hover .acme-copy-heading,
+.entry-content :is(h2, h3, h4, h5, h6):focus-within .acme-copy-heading {
+	opacity: 1;
+}
+
+.acme-toc {
+	border-radius: var(--acme-border-radius);
+	padding: 1.5rem;
+	border: 1px solid var(--wp--preset--color--neutral-80);
+	background: var(--wp--preset--color--neutral-0);
+}
+
+.acme-toc__title {
+	margin: 0 0 1rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.acme-toc__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.5rem;
+}
+
+.acme-toc__list a {
+	text-decoration: none;
+}
+
+.acme-note {
+	padding: 1.5rem;
+	border-radius: var(--acme-border-radius);
+	border: 1px solid currentColor;
+}
+
+.acme-callout {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.acme-reading-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	align-items: center;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.acme-share-links {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.acme-share-links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.35rem 0.75rem;
+	border-radius: 999px;
+	border: 1px solid currentColor;
+	text-decoration: none;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.acme-author-card {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: minmax(64px, 96px) 1fr;
+	align-items: center;
+}
+
+.acme-author-card__avatar img {
+	border-radius: 50%;
+	box-shadow: var(--wp--preset--shadow--soft);
+}
+
+.acme-related-loop {
+	display: grid;
+	gap: var(--wp--preset--spacing--md);
+}
+
+.acme-related-loop__grid {
+	display: grid;
+	gap: 1.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.acme-reading-settings {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+}
+
+.acme-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+.entry-content :is(h2, h3, h4).has-acme-copy {
+	padding-right: 2rem;
+}
+
+.acme-copy-heading.is-copied::after {
+	content: 'Copied!';
+	position: absolute;
+	top: 100%;
+	right: 0;
+	background: var(--wp--preset--color--neutral-80);
+	color: var(--wp--preset--color--neutral-0);
+	padding: 0.25rem 0.5rem;
+	border-radius: var(--acme-border-radius-sm);
+	font-size: var(--wp--preset--font-size--caption);
+	transform: translateY(0.35rem);
+}
+
+html.acme-lock-scroll,
+html.acme-lock-scroll body {
+	overflow: hidden;
+}

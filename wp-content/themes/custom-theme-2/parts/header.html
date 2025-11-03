@@ -1,0 +1,57 @@
+<!-- wp:group {"align":"full","className":"site-header-wrap","style":{"spacing":{"padding":{"top":"var(--wp--preset--spacing--sm)","bottom":"var(--wp--preset--spacing--sm)","left":"var(--wp--preset--spacing--lg)","right":"var(--wp--preset--spacing--lg)"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-group site-header-wrap">
+	<header class="site-header">
+		<!-- wp:html -->
+		<a class="acme-skip-link" href="#wp--skip-link--target">Skip to content</a>
+		<!-- /wp:html -->
+
+		<!-- wp:group {"className":"site-header__inner","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"var(--wp--preset--spacing--md)"}}} -->
+		<div class="wp-block-group site-header__inner">
+			<!-- wp:group {"className":"site-branding","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"flex-start","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"0.75rem"}}} -->
+			<div class="wp-block-group site-branding">
+				<!-- wp:site-logo {"width":48,"shouldSyncIcon":false,"className":"site-branding__avatar"} /-->
+
+				<!-- wp:group {"className":"site-branding__text","layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"0"}}} -->
+				<div class="wp-block-group site-branding__text">
+					<!-- wp:site-title {"className":"site-branding__title","level":2,"fontSize":"h5"} /-->
+					<!-- wp:site-tagline {"className":"site-branding__description","fontSize":"small"} /-->
+				</div>
+				<!-- /wp:group -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","setCascadingProperties":true,"justifyContent":"center"},"fontSize":"small","menuSlug":"primary"} /-->
+
+			<!-- wp:group {"className":"site-header__actions","layout":{"type":"flex","flexWrap":"nowrap"},"style":{"spacing":{"blockGap":"0.75rem"}}} -->
+			<div class="wp-block-group site-header__actions">
+				<!-- wp:html -->
+				<button class="acme-dark-toggle" type="button" data-acme-toggle="dark-mode" aria-pressed="false">
+					<span class="acme-dark-toggle__icon" aria-hidden="true">◐</span>
+					<span class="acme-dark-toggle__label">Theme</span>
+				</button>
+				<!-- /wp:html -->
+
+				<!-- wp:html -->
+				<button class="acme-mobile-nav-toggle" type="button" data-acme-mobile-toggle aria-expanded="false" aria-controls="acme-offcanvas-nav">
+					<span class="acme-sr-only">Toggle navigation</span>
+					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+				</button>
+				<!-- /wp:html -->
+			</div>
+			<!-- /wp:group -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:html -->
+		<div class="acme-offcanvas-overlay" aria-hidden="true"></div>
+		<!-- /wp:html -->
+
+		<!-- wp:navigation {"anchor":"acme-offcanvas-nav","className":"acme-offcanvas","overlayMenu":"never","layout":{"type":"flex","orientation":"vertical","justifyContent":"flex-start"},"fontSize":"small","menuSlug":"primary"} /-->
+
+		<!-- wp:paragraph {"className":"acme-offcanvas__footer-text","fontSize":"small"} -->
+		<p class="acme-offcanvas__footer-text has-small-font-size">&copy; [acme_year]</p>
+		<!-- /wp:paragraph -->
+		<!-- wp:site-title {"className":"acme-offcanvas__footer-title","level":0,"fontSize":"small","isLink":false} /-->
+	</header>
+</div>
+<!-- /wp:group -->
