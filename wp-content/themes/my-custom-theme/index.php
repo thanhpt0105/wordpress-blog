@@ -99,23 +99,36 @@ $highlight_categories = get_categories(array(
         </section>
     </main>
 
-    <aside class="site-sidebar">
-        <?php if (is_active_sidebar('sidebar-1')) : ?>
-            <?php dynamic_sidebar('sidebar-1'); ?>
-        <?php else : ?>
-            <section class="widget about-widget">
-                <h2 class="widget-title"><?php esc_html_e('Hi, I\'m [Your Name]!', 'my-custom-theme'); ?></h2>
-                <p><?php esc_html_e('Sharing dreamy adventures, style musings, and little joys from everyday life.', 'my-custom-theme'); ?></p>
-            </section>
-            <section class="widget instagram-widget">
-                <h2 class="widget-title"><?php esc_html_e('Instagram Faves', 'my-custom-theme'); ?></h2>
-                <p><?php esc_html_e('Embed your feed or add pretty snapshots here.', 'my-custom-theme'); ?></p>
-            </section>
-            <section class="widget newsletter-widget">
-                <h2 class="widget-title"><?php esc_html_e('Stay in the Loop', 'my-custom-theme'); ?></h2>
-                <p><?php esc_html_e('Invite readers to join your newsletter for weekly inspiration.', 'my-custom-theme'); ?></p>
-            </section>
-        <?php endif; ?>
+    <aside class="site-sidebar" data-collapsible="sidebar">
+        <button
+            class="pill-toggle sidebar-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="sidebar-widgets"
+            data-label-closed="<?php esc_attr_e('Show sidebar goodies', 'my-custom-theme'); ?>"
+            data-label-open="<?php esc_attr_e('Hide sidebar goodies', 'my-custom-theme'); ?>"
+        >
+            <span class="pill-toggle__icon" aria-hidden="true"></span>
+            <span class="pill-toggle__label sidebar-toggle__label"><?php esc_html_e('Show sidebar goodies', 'my-custom-theme'); ?></span>
+        </button>
+        <div id="sidebar-widgets" class="sidebar-widgets" hidden>
+            <?php if (is_active_sidebar('sidebar-1')) : ?>
+                <?php dynamic_sidebar('sidebar-1'); ?>
+            <?php else : ?>
+                <section class="widget about-widget">
+                    <h2 class="widget-title"><?php esc_html_e('Hi, I\'m [Your Name]!', 'my-custom-theme'); ?></h2>
+                    <p><?php esc_html_e('Sharing dreamy adventures, style musings, and little joys from everyday life.', 'my-custom-theme'); ?></p>
+                </section>
+                <section class="widget instagram-widget">
+                    <h2 class="widget-title"><?php esc_html_e('Instagram Faves', 'my-custom-theme'); ?></h2>
+                    <p><?php esc_html_e('Embed your feed or add pretty snapshots here.', 'my-custom-theme'); ?></p>
+                </section>
+                <section class="widget newsletter-widget">
+                    <h2 class="widget-title"><?php esc_html_e('Stay in the Loop', 'my-custom-theme'); ?></h2>
+                    <p><?php esc_html_e('Invite readers to join your newsletter for weekly inspiration.', 'my-custom-theme'); ?></p>
+                </section>
+            <?php endif; ?>
+        </div>
     </aside>
 </div>
 

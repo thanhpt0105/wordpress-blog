@@ -40,15 +40,15 @@
         </div>
 
         <button
-            class="category-nav__toggle"
+            class="pill-toggle category-nav__toggle"
             type="button"
             aria-expanded="false"
             aria-controls="primary-category-nav"
             data-label-closed="<?php esc_attr_e('Browse categories', 'my-custom-theme'); ?>"
             data-label-open="<?php esc_attr_e('Hide categories', 'my-custom-theme'); ?>"
         >
-            <span class="category-nav__toggle-icon" aria-hidden="true"></span>
-            <span class="category-nav__toggle-label"><?php esc_html_e('Browse categories', 'my-custom-theme'); ?></span>
+            <span class="pill-toggle__icon" aria-hidden="true"></span>
+            <span class="pill-toggle__label category-nav__toggle-label"><?php esc_html_e('Browse categories', 'my-custom-theme'); ?></span>
         </button>
 
         <nav id="primary-category-nav" class="category-nav" aria-label="<?php esc_attr_e('Blog categories', 'my-custom-theme'); ?>">

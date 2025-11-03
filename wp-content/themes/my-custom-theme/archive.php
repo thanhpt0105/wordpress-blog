@@ -68,15 +68,28 @@ get_header();
         <?php endif; ?>
     </main>
 
-    <aside class="site-sidebar">
-        <?php if (is_active_sidebar('sidebar-1')) : ?>
-            <?php dynamic_sidebar('sidebar-1'); ?>
-        <?php else : ?>
-            <section class="widget about-widget">
-                <h2 class="widget-title"><?php esc_html_e('About the author', 'my-custom-theme'); ?></h2>
-                <p><?php esc_html_e('Share a little about yourself here to greet new readers.', 'my-custom-theme'); ?></p>
-            </section>
-        <?php endif; ?>
+    <aside class="site-sidebar" data-collapsible="sidebar">
+        <button
+            class="pill-toggle sidebar-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="sidebar-widgets"
+            data-label-closed="<?php esc_attr_e('Show sidebar goodies', 'my-custom-theme'); ?>"
+            data-label-open="<?php esc_attr_e('Hide sidebar goodies', 'my-custom-theme'); ?>"
+        >
+            <span class="pill-toggle__icon" aria-hidden="true"></span>
+            <span class="pill-toggle__label sidebar-toggle__label"><?php esc_html_e('Show sidebar goodies', 'my-custom-theme'); ?></span>
+        </button>
+        <div id="sidebar-widgets" class="sidebar-widgets" hidden>
+            <?php if (is_active_sidebar('sidebar-1')) : ?>
+                <?php dynamic_sidebar('sidebar-1'); ?>
+            <?php else : ?>
+                <section class="widget about-widget">
+                    <h2 class="widget-title"><?php esc_html_e('About the author', 'my-custom-theme'); ?></h2>
+                    <p><?php esc_html_e('Share a little about yourself here to greet new readers.', 'my-custom-theme'); ?></p>
+                </section>
+            <?php endif; ?>
+        </div>
     </aside>
 </div>
 
