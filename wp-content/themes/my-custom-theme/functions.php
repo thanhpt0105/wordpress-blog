@@ -9,6 +9,13 @@ function my_custom_theme_enqueue_scripts() {
     );
     wp_enqueue_style('my-custom-theme-style', get_stylesheet_uri());
     // Add additional styles or scripts here
+    wp_enqueue_script(
+        'my-custom-theme-responsive',
+        get_template_directory_uri() . '/assets/js/responsive.js',
+        array(),
+        null,
+        true
+    );
 }
 add_action('wp_enqueue_scripts', 'my_custom_theme_enqueue_scripts');
 
