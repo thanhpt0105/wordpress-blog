@@ -359,6 +359,31 @@ body {
 	background: color-mix(in srgb, var(--wp--preset--color--background) 95%, transparent);
 }
 
+.footer-social {
+	gap: 0.85rem;
+}
+
+.footer-social .wp-social-link {
+	transition: transform var(--acme-transition), color var(--acme-transition), background-color var(--acme-transition);
+}
+
+.footer-social .wp-social-link a {
+	color: var(--wp--preset--color--muted);
+	background: color-mix(in srgb, var(--wp--preset--color--surface) 80%, transparent);
+	border-radius: 999px;
+	padding: 0.35rem 0.75rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.footer-social .wp-social-link:hover a,
+.footer-social .wp-social-link:focus-within a {
+	color: var(--wp--preset--color--accent);
+	background: color-mix(in srgb, var(--wp--preset--color--accent) 15%, transparent);
+	transform: translateY(-1px);
+}
+
 .comment-form .form-submit input {
 	border-radius: 999px;
 	padding: 0.9rem 1.6rem;

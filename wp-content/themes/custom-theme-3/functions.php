@@ -306,7 +306,7 @@ function acme_footer_note_shortcode() {
 		esc_attr( 'var(--wp--preset--color--muted)' ),
 		esc_html( gmdate( 'Y' ) ),
 		esc_html( get_bloginfo( 'name' ) ),
-		esc_html__( 'Built for thoughtful publishing.', 'acme' )
+		esc_html__( 'Tuno', 'acme' )
 	);
 }
 add_shortcode( 'acme_footer_note', 'acme_footer_note_shortcode' );
