@@ -27,6 +27,12 @@ acmeDomReady(() => {
 		if (darkToggle) {
 			darkToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
 			darkToggle.dataset.mode = isDark ? 'dark' : 'light';
+			darkToggle.classList.toggle('is-dark', isDark);
+			const icon = darkToggle.querySelector('[data-mode-icon]');
+			if (icon) {
+				icon.textContent = isDark ? '🌙' : '💡';
+			}
+
 			darkToggle.querySelector('[data-mode-label]').textContent = isDark ? acmeTheme.strings.dark : acmeTheme.strings.light;
 		}
 	};

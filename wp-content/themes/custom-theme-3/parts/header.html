@@ -16,13 +16,16 @@
 
 		<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","justifyContent":"center","orientation":"horizontal","flexWrap":"wrap"},"style":{"typography":{"fontSize":"1rem"}},"fontFamily":"inter-sans"} /-->
 
-		<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"right","flexWrap":"nowrap"},"className":"site-header__actions"} -->
-		<div class="wp-block-buttons site-header__actions">
-			<!-- wp:button {"backgroundColor":"surface","style":{"border":{"radius":"999px","width":"1px"},"color":{"text":"var:preset|color|foreground"},"spacing":{"padding":{"top":"0.4rem","bottom":"0.4rem","left":"1rem","right":"1rem"}}},"className":"is-style-outline"} -->
-			<div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-surface-background-color has-foreground-color has-text-color has-background site-header__toggle" href="#!" role="button" aria-pressed="false" data-dark-mode-toggle data-mode="light"><span aria-hidden="true">●</span> <span data-mode-label>Light</span></a></div>
-			<!-- /wp:button -->
+		<!-- wp:group {"layout":{"type":"flex","justifyContent":"right","flexWrap":"nowrap"},"className":"site-header__actions","style":{"spacing":{"blockGap":"0.5rem"}}} -->
+		<div class="wp-block-group site-header__actions">
+			<!-- wp:html -->
+			<button type="button" class="site-header__toggle" data-dark-mode-toggle data-mode="light" aria-pressed="false">
+				<span aria-hidden="true" class="site-header__toggle-icon" data-mode-icon>💡</span>
+				<span data-mode-label>Light</span>
+			</button>
+			<!-- /wp:html -->
 		</div>
-		<!-- /wp:buttons -->
+		<!-- /wp:group -->
 	</div>
 	<!-- /wp:group -->
 </header>
