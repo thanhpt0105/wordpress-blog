@@ -18,7 +18,7 @@ services:
       start_period: 30s
 
   wordpress:
-    image: wordpress:6.4-php8.2-apache
+    image: wordpress:6.6-php8.2-apache
     depends_on:
       db:
         condition: service_healthy
