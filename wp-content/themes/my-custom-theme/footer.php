@@ -2,6 +2,8 @@
 // Footer section of the custom WordPress theme
 ?>
 
+</div><!-- #content -->
+
 <footer>
     <div class="footer-content">
         <p>&copy; <?php echo date("Y"); ?> My Custom Blog. All rights reserved.</p>
