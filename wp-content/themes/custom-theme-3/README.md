@@ -42,6 +42,7 @@ Reusable patterns live in `patterns/` and appear in the block inserter under **A
 
 - Hero Feature (`custom-theme-3/hero-feature`)
 - Author Bio Card (`custom-theme-3/author-bio`)
+- Category Menu (`custom-theme-3/category-menu`)
 - Post Grid (`custom-theme-3/post-grid`)
 - Quote Highlight (`custom-theme-3/quote-highlight`)
 - Call to Action (`custom-theme-3/call-to-action`)

@@ -111,6 +111,83 @@ body {
 	backdrop-filter: blur(8px);
 }
 
+.site-header__categories {
+	display: flex;
+	justify-content: center;
+	overflow-x: auto;
+	scrollbar-width: thin;
+	border-top: 1px solid color-mix(in srgb, var(--wp--preset--color--foreground) 6%, transparent);
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.site-header__categories::-webkit-scrollbar {
+	height: 4px;
+}
+
+.site-header__categories::-webkit-scrollbar-thumb {
+	background-color: color-mix(in srgb, var(--wp--preset--color--foreground) 18%, transparent);
+	border-radius: 999px;
+}
+
+.site-header__category-list {
+	display: flex;
+	gap: 1.25rem;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	font-family: var(--wp--preset--font-family--inter-sans);
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.site-header__category-list li {
+	list-style: none;
+}
+
+.site-header__category-list a {
+	color: inherit;
+	text-decoration: none;
+	padding-bottom: 0.25rem;
+	border-bottom: 2px solid transparent;
+	transition: border-color var(--acme-transition), color var(--acme-transition);
+}
+
+.site-header__category-list a:focus-visible,
+.site-header__category-list a:hover,
+.site-header__category-list li.current-cat > a {
+	border-bottom-color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--accent);
+}
+
+.site-header__categories::after,
+.site-header__categories::before {
+	content: "";
+	display: block;
+	width: 2rem;
+	flex: 0 0 auto;
+}
+
+.site-header__categories::before {
+	background: linear-gradient(90deg, var(--wp--preset--color--background) 0%, color-mix(in srgb, var(--wp--preset--color--background) 60%, transparent) 100%);
+}
+
+.site-header__categories::after {
+	background: linear-gradient(270deg, var(--wp--preset--color--background) 0%, color-mix(in srgb, var(--wp--preset--color--background) 60%, transparent) 100%);
+}
+
+.site-header__categories {
+	scroll-snap-type: x proximity;
+}
+
+.site-header__category-list li {
+	scroll-snap-align: start;
+}
+
 .acme-reading-progress {
 	position: fixed;
 	top: 0;
@@ -379,6 +456,10 @@ body.is-dark-mode {
 body.is-dark-mode .site-header {
 	background-color: color-mix(in srgb, var(--wp--preset--color--dark-background) 90%, transparent);
 	border-bottom-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 12%, transparent);
+}
+
+body.is-dark-mode .site-header__categories {
+	border-top-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 10%, transparent);
 }
 
 body.is-dark-mode .site-header__toggle {
