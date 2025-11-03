@@ -488,6 +488,40 @@ a:focus {
     background: linear-gradient(135deg, rgba(248, 220, 229, 0.6), rgba(255, 249, 246, 0.9));
 }
 
+.instagram-widget__text {
+    margin: 0 0 1.2rem;
+    color: var(--color-text);
+}
+
+.instagram-widget__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.3rem;
+    border-radius: var(--radius-pill);
+    background: rgba(107, 183, 170, 0.15);
+    color: var(--color-plum);
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.instagram-widget__link::after {
+    content: '→';
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+}
+
+.instagram-widget__link:hover,
+.instagram-widget__link:focus {
+    background: var(--color-teal);
+    color: #fff;
+}
+
+.instagram-widget__link:hover::after,
+.instagram-widget__link:focus::after {
+    transform: translateX(2px);
+}
+
 footer {
     background: #fff;
     padding: 2rem 1.5rem;
