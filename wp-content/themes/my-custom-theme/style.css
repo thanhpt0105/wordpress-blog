@@ -273,7 +273,6 @@ a:focus {
 
 .post-card {
     display: grid;
-    grid-template-columns: 180px 1fr;
     gap: 1.5rem;
     background: #fff;
     border-radius: var(--radius-soft);
@@ -281,6 +280,14 @@ a:focus {
     margin-bottom: 1.8rem;
     box-shadow: var(--shadow-soft);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card--with-thumb {
+    grid-template-columns: 180px 1fr;
+}
+
+.post-card--no-thumb {
+    grid-template-columns: 1fr;
 }
 
 .post-card:hover,

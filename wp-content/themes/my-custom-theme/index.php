@@ -9,7 +9,7 @@ get_header();
 
 $highlight_categories = get_categories(array(
     'hide_empty' => false,
-    'number'     => 4,
+    'number'     => 3,
     'orderby'    => 'count',
     'order'      => 'DESC',
 ));
@@ -50,8 +50,14 @@ $highlight_categories = get_categories(array(
 
             <?php if (have_posts()) : ?>
                 <?php while (have_posts()) : the_post(); ?>
-                    <article id="post-<?php the_ID(); ?>" <?php post_class('post-card'); ?>>
-                        <?php if (has_post_thumbnail()) : ?>
+                    <?php
+                    $has_thumbnail = has_post_thumbnail();
+                    $card_classes = $has_thumbnail
+                        ? array('post-card', 'post-card--with-thumb')
+                        : array('post-card', 'post-card--no-thumb');
+                    ?>
+                    <article id="post-<?php the_ID(); ?>" <?php post_class($card_classes); ?>>
+                        <?php if ($has_thumbnail) : ?>
                             <a class="post-card__thumb" href="<?php the_permalink(); ?>">
                                 <?php the_post_thumbnail('medium_large'); ?>
                             </a>
