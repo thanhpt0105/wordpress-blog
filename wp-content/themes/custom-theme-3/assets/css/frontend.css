@@ -10,6 +10,23 @@ body {
 	color: var(--wp--preset--color--foreground);
 }
 
+.wp-site-blocks {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.wp-site-blocks > main {
+	flex: 1 0 auto;
+	width: 100%;
+}
+
+.wp-site-blocks > .wp-block-template-part,
+.wp-site-blocks > header,
+.wp-site-blocks > footer {
+	flex: 0 0 auto;
+}
+
 .is-layout-constrained > * {
 	max-width: var(--acme-content-max);
 	margin-left: auto;
