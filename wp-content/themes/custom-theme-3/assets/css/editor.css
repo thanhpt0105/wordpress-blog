@@ -51,23 +51,6 @@
 	border: 1px solid color-mix(in srgb, var(--wp--preset--color--foreground) 15%, transparent);
 }
 
-.editor-styles-wrapper .acme-newsletter-form {
-	display: flex;
-	gap: 0.75rem;
-	flex-wrap: wrap;
-}
-
-.editor-styles-wrapper .acme-newsletter-form input[type="email"] {
-	padding: 0.9rem 1.2rem;
-	border-radius: 999px;
-	border: 1px solid color-mix(in srgb, var(--wp--preset--color--foreground) 20%, transparent);
-}
-
-.editor-styles-wrapper .acme-newsletter-form button {
-	padding: 0.9rem 1.8rem;
-	border-radius: 999px;
-}
-
 .editor-styles-wrapper .acme-related-posts__list {
 	display: grid;
 	gap: 1.5rem;

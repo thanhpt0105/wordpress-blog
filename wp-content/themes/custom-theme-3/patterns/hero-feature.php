@@ -37,13 +37,17 @@
 		</div>
 		<!-- /wp:group -->
 
-		<!-- wp:cover {"overlayColor":"surface","minHeight":420,"style":{"border":{"radius":"28px"},"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}}} -->
-		<div class="wp-block-cover" style="border-radius:28px;min-height:420px"><span aria-hidden="true" class="wp-block-cover__background has-surface-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container">
-			<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"1rem","lineHeight":"1.65"},"spacing":{"padding":{"top":"3rem","right":"3rem","bottom":"3rem","left":"3rem"}}}} -->
-			<p class="has-text-align-center" style="padding-top:3rem;padding-right:3rem;padding-bottom:3rem;padding-left:3rem;font-size:1rem;line-height:1.65"><?php echo esc_html__( '“Publishing on this theme feels effortless. Every post looks premium without the heavy tooling.”', 'acme' ); ?></p>
+		<!-- wp:group {"backgroundColor":"surface","layout":{"type":"constrained"},"style":{"border":{"radius":"28px","width":"1px","color":"var:preset|color|surface"},"spacing":{"padding":{"top":"3rem","right":"3rem","bottom":"3rem","left":"3rem"},"blockGap":"1.5rem"}},"className":"acme-hero__quote"} -->
+		<div class="wp-block-group acme-hero__quote has-surface-background-color has-background" style="border-color:var(--wp--preset--color--surface);border-style:solid;border-width:1px;border-radius:28px;padding-top:3rem;padding-right:3rem;padding-bottom:3rem;padding-left:3rem">
+			<!-- wp:paragraph {"align":"center","textColor":"foreground","fontFamily":"charter-serif","fontSize":"lg","style":{"typography":{"lineHeight":"1.6","fontStyle":"italic"}}} -->
+			<p class="has-text-align-center has-foreground-color has-text-color has-charter-serif-font-family has-lg-font-size" style="font-style:italic;line-height:1.6"><?php echo esc_html__( '“Publishing on this theme feels effortless. Every post looks premium without the heavy tooling.”', 'acme' ); ?></p>
 			<!-- /wp:paragraph -->
-		</div></div>
-		<!-- /wp:cover -->
+
+			<!-- wp:paragraph {"align":"center","textColor":"muted","fontFamily":"inter-sans","style":{"typography":{"letterSpacing":"0.18em","textTransform":"uppercase","fontSize":"0.8rem","fontWeight":"600"}}} -->
+			<p class="has-text-align-center has-muted-color has-text-color has-inter-sans-font-family" style="letter-spacing:0.18em;text-transform:uppercase;font-size:0.8rem;font-weight:600"><?php echo esc_html__( 'Reader feedback', 'acme' ); ?></p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
 	</div>
 	<!-- /wp:group -->
 </div>
