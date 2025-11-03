@@ -1,0 +1,45 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}}}} -->
+<div class="wp-block-group">
+	<!-- wp:group {"style":{"spacing":{"margin":{"bottom":"2rem"}}}} -->
+	<div class="wp-block-group">
+		<!-- wp:heading {"level":1,"fontSize":"xxl"} -->
+		<h1 class="wp-block-heading has-xxl-font-size">Search results</h1>
+		<!-- /wp:heading -->
+		<!-- wp:search {"showLabel":false,"placeholder":"Search…","buttonPosition":"button-inside","buttonUseIcon":true} /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"layout":{"type":"constrained"}} -->
+	<div class="wp-block-group">
+		<!-- wp:query {"queryId":5,"query":{"perPage":10,"pages":0,"offset":0,"postType":"any","order":"desc","orderBy":"relevance","search":"","exclude":[],"sticky":"exclude"},"layout":{"type":"constrained"},"displayLayout":{"type":"list"}} -->
+		<div class="wp-block-query">
+			<!-- wp:post-template -->
+			<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem","padding":{"bottom":"2rem"},"margin":{"bottom":"2rem"}},"border":{"bottom":{"color":"var:preset|color|surface","width":"1px"}}},"className":"acme-post-card"} -->
+			<div class="wp-block-group acme-post-card">
+				<!-- wp:post-title {"isLink":true,"fontSize":"lg"} /-->
+				<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap"},"style":{"spacing":{"blockGap":"0.5rem"},"typography":{"fontSize":"0.85rem"}},"className":"acme-post-card__meta"} -->
+				<div class="wp-block-group acme-post-card__meta">
+					<!-- wp:post-date {"format":"M j, Y"} /-->
+					<!-- wp:post-terms {"term":"category","className":"acme-post-card__category"} /-->
+				</div>
+				<!-- /wp:group -->
+				<!-- wp:post-excerpt {"moreText":"Continue reading"} /-->
+			</div>
+			<!-- /wp:group -->
+			<!-- /wp:post-template -->
+
+			<!-- wp:query-no-results -->
+			<!-- wp:paragraph -->
+			<p>No results found. Try a different search.</p>
+			<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+		</div>
+		<!-- /wp:query -->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
