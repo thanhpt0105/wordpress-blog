@@ -18,7 +18,7 @@ Custom Theme 3 is a typography-first, distraction-free block theme built for wri
 - AJAX “Load more” button (`[acme_load_more]`) for the blog index and archives — automatically enabled on templates.
 - Accessible, streamlined comments and keyboard-friendly navigation.
 - JSON-LD (`Blog`, `BlogPosting`, `BreadcrumbList`, `Person`) plus Open Graph/Twitter cards out of the box.
-- Patterns for hero, author bio, quote highlight, post grid, CTA, and link-in-bio landing.
+- Patterns for hero, author bio, quote highlight, post grid, and link-in-bio landing.
 
 ## Optional Enhancements
 
@@ -45,7 +45,6 @@ Reusable patterns live in `patterns/` and appear in the block inserter under **A
 - Category Menu (`custom-theme-3/category-menu`)
 - Post Grid (`custom-theme-3/post-grid`)
 - Quote Highlight (`custom-theme-3/quote-highlight`)
-- Call to Action (`custom-theme-3/call-to-action`)
 - Link in Bio (`custom-theme-3/link-in-bio`)
 
 Insert any pattern to bootstrap pages, the front page, or landing experiences quickly.
