@@ -330,25 +330,26 @@ function acme_customize_register( $wp_customize ) {
 		)
 	);
 
-	$wp_customize->add_setting(
-		'acme_hero_secondary_link',
-		array(
-			'default'           => '#',
-			'type'              => 'theme_mod',
-			'capability'        => 'edit_theme_options',
-			'transport'         => 'refresh',
-			'sanitize_callback' => 'esc_url_raw',
-		)
-	);
+    $wp_customize->add_setting(
+        'acme_hero_secondary_page',
+        array(
+            'default'           => 0,
+            'type'              => 'theme_mod',
+            'capability'        => 'edit_theme_options',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'absint',
+        )
+    );
 
-	$wp_customize->add_control(
-		'acme_hero_secondary_link',
-		array(
-			'type'        => 'url',
-			'section'     => 'acme_hero_feature',
-			'label'       => __( 'Secondary Button Link', 'acme' ),
-		)
-	);
+    $wp_customize->add_control(
+        'acme_hero_secondary_page',
+        array(
+            'type'        => 'dropdown-pages',
+            'section'     => 'acme_hero_feature',
+            'label'       => __( 'Secondary Button Page', 'acme' ),
+            'description' => __( 'Select the page linked from the secondary button.', 'acme' ),
+        )
+    );
 
 	$wp_customize->add_setting(
 		'acme_hero_quote',

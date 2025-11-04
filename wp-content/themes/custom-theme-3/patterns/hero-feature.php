@@ -6,7 +6,7 @@
  * Viewport Width: 1200
  */
 ?>
-<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"padding":{"top":"4rem","bottom":"4rem"},"blockGap":"2.5rem"}},"className":"acme-hero"} -->
+<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"padding":{"top":"4rem","bottom":"2rem"},"blockGap":"1rem"}},"className":"acme-hero"} -->
 <div class="wp-block-group acme-hero">
 	<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"top"},"style":{"spacing":{"blockGap":"2.5rem"}}} -->
 	<div class="wp-block-group">
@@ -30,7 +30,11 @@
 				<div class="wp-block-button"><a class="wp-block-button__link has-background-color has-accent-background-color has-text-color has-background" href="<?php echo esc_url( get_theme_mod( 'acme_hero_primary_link', '#latest' ) ); ?>"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_primary_label', esc_html__( 'Start reading', 'acme' ) ) ); ?></a></div>
 				<!-- /wp:button -->
 				<!-- wp:button {"className":"is-style-outline"} -->
-				<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( get_theme_mod( 'acme_hero_secondary_link', '#' ) ); ?>"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_secondary_label', esc_html__( 'About the author', 'acme' ) ) ); ?></a></div>
+				<?php
+				$acme_secondary_page_id = (int) get_theme_mod( 'acme_hero_secondary_page', 0 );
+				$acme_secondary_url     = $acme_secondary_page_id ? get_permalink( $acme_secondary_page_id ) : '#';
+				?>
+				<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $acme_secondary_url ); ?>"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_secondary_label', esc_html__( 'About the author', 'acme' ) ) ); ?></a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
