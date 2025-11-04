@@ -14,14 +14,10 @@ function acme_prime_cache_urls(array $urls) {
 			continue;
 		}
 
-		$response = wp_remote_get(add_query_arg('_cache_prime', time(), $url), array(
-			'timeout'  => 8,
-			'blocking' => true,
+		wp_remote_get(add_query_arg('_cache_prime', time(), $url), array(
+			'timeout'  => 3,
+			'blocking' => false,
 		));
-
-		if (is_wp_error($response)) {
-			do_action('gd_system_purge_cache_path', wp_parse_url($url, PHP_URL_PATH));
-		}
 	}
 }
 
