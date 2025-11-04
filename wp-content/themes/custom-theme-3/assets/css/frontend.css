@@ -490,6 +490,29 @@ body {
 		gap: 1rem 1.25rem;
 	}
 
+	.site-header__categories {
+		justify-content: center;
+		overflow-x: visible;
+		scroll-snap-type: none;
+	}
+
+	.site-header__categories::before,
+	.site-header__categories::after {
+		display: none;
+	}
+
+	.site-header__category-list {
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem 1.25rem;
+		white-space: normal;
+		text-align: center;
+	}
+
+	.site-header__category-list li {
+		scroll-snap-align: initial;
+	}
+
 	.footer-social {
 		gap: 0.55rem;
 	}

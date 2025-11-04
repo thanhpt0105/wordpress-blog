@@ -6,7 +6,7 @@
  * Description: Horizontal category navigation strip for the header.
  */
 ?>
-<!-- wp:group {"align":"wide","className":"site-header__categories","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"},"style":{"spacing":{"padding":{"top":"0.5rem","bottom":"0.5rem"}}}} -->
+<!-- wp:group {"align":"wide","className":"site-header__categories","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center","orientation":"horizontal"},"style":{"spacing":{"padding":{"top":"0.5rem","bottom":"0.5rem"}}}} -->
 <div class="wp-block-group alignwide site-header__categories">
 	<!-- wp:categories {"showPostCounts":false,"showHierarchy":false,"displayAsDropdown":false,"className":"site-header__category-list"} /-->
 </div>
