@@ -12,6 +12,7 @@ const acmeClamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 acmeDomReady(() => {
 	const body = doc.body;
+	const root = doc.documentElement;
 	const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 	const progressBar = doc.querySelector('.acme-reading-progress__bar');
 	const darkToggle = doc.querySelector('[data-dark-mode-toggle]');
@@ -23,6 +24,8 @@ acmeDomReady(() => {
 	const applyTheme = (mode) => {
 		const isDark = mode === 'dark';
 		body.classList.toggle('is-dark-mode', isDark);
+		root.classList.toggle('is-dark-mode', isDark);
+		root.style.colorScheme = isDark ? 'dark' : 'light';
 
 		if (darkToggle) {
 			darkToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
