@@ -74,6 +74,26 @@ wordpress-blog
 - After completing the setup, you can start creating blog posts and pages using the WordPress admin dashboard.
 - Use the custom plugin to add any additional functionality as needed.
 
+## Social Login (Google & Facebook)
+This project ships with the Nextend Social Login plugin pre-installed and bootstrapped via a must-use plugin. To finish enabling Google and Facebook authentication:
+
+1. **Create OAuth credentials**
+   - **Google:** Visit [Google Cloud Console](https://console.cloud.google.com/), create OAuth 2.0 credentials, and add the authorized redirect URL provided by the plugin (e.g. `https://your-domain.com/wp-login.php?loginGoogle=1`). Ensure the OAuth consent screen is published.
+   - **Facebook:** Visit [Meta for Developers](https://developers.facebook.com/), create an app, enable Facebook Login, and register the redirect URL (e.g. `https://your-domain.com/wp-login.php?loginFacebook=1`).
+2. **Provide credentials to WordPress**
+   - Add the values as environment variables or `wp-config.php` constants. Supported keys:
+     ```php
+     define('SOCIAL_LOGIN_GOOGLE_CLIENT_ID', 'your-google-client-id');
+     define('SOCIAL_LOGIN_GOOGLE_CLIENT_SECRET', 'your-google-client-secret');
+     define('SOCIAL_LOGIN_FACEBOOK_APP_ID', 'your-facebook-app-id');
+     define('SOCIAL_LOGIN_FACEBOOK_APP_SECRET', 'your-facebook-app-secret');
+     ```
+     Environment variables with the same names (or `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`) are also recognised automatically.
+3. **Create a login page (optional)**
+   - Add a new page in WordPress, assign it the **Login Page** template, and publish. Visitors will see the traditional login form alongside Google and Facebook buttons supplied by the plugin.
+
+Once credentials are present, social buttons appear on `/wp-login.php`, the optional Login Page template, and any `wp_login_form` instances.
+
 ## Troubleshooting Tips
 - If you encounter any issues during installation, ensure that your PHP and MySQL versions meet the requirements.
 - Check file permissions to ensure that WordPress can read and write files as needed.

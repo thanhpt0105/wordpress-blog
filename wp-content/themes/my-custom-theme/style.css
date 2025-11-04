@@ -628,6 +628,70 @@ a:focus {
     transform: translateX(2px);
 }
 
+.login-page .page-content {
+    max-width: 420px;
+    margin: 0 auto 3rem;
+    padding: 2.5rem 2.25rem;
+    background: #fff;
+    border-radius: var(--radius-soft);
+    box-shadow: var(--shadow-soft);
+}
+
+.login-page .social-login-buttons {
+    margin-top: 2rem;
+}
+
+.login-page .social-login-buttons .nsl-container {
+    margin: 0;
+}
+
+.login-page #loginform label {
+    font-weight: 600;
+    color: var(--color-plum);
+}
+
+.login-page #loginform input[type="text"],
+.login-page #loginform input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: var(--radius-soft);
+    border: 1px solid rgba(91, 58, 87, 0.15);
+    margin-top: 0.3rem;
+    margin-bottom: 1rem;
+}
+
+.login-page #loginform .forgetmenot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.login-page #loginform .submit input {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    background: var(--color-plum);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.login-page #loginform .submit input:hover,
+.login-page #loginform .submit input:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(91, 58, 87, 0.2);
+}
+
+.login-page .lost-password {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
 .site-sidebar[data-collapsible="sidebar"] {
     display: flex;
     flex-direction: column;
