@@ -69,13 +69,15 @@ jobs:
 
             echo "Syncing staged content into $DEPLOY_PATH/wp-content"
             mkdir -p "$DEPLOY_PATH/wp-content"
-            rsync -a --delete \
+            rsync -rtlv --delete \
               --exclude='mu-plugins/**' \
               --exclude='cache/**' \
               --exclude='upgrade/**' \
               --exclude='uploads/cache/**' \
               --exclude='advanced-cache.php' \
               --exclude='object-cache.php' \
+              --exclude='.htaccess' \
+              --exclude='.user.ini' \
               "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"
 
             echo "Cleaning up remote artifacts"
