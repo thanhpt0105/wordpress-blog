@@ -116,6 +116,113 @@ function acme_enqueue_block_editor_assets() {
 add_action( 'enqueue_block_editor_assets', 'acme_enqueue_block_editor_assets' );
 
 /**
+ * Register Customizer settings.
+ *
+ * Allows swapping the author bio image used in the Author Bio card pattern.
+ *
+ * @param WP_Customize_Manager $wp_customize Manager instance.
+ */
+function acme_customize_register( $wp_customize ) {
+	$wp_customize->add_section(
+		'acme_author_bio',
+		array(
+			'title'       => __( 'Author Bio', 'acme' ),
+			'description' => __( 'Configure the image displayed in the Author Bio card.', 'acme' ),
+			'priority'    => 160,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_author_bio_image',
+		array(
+			'default'           => '',
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'acme_sanitize_author_bio_image',
+		)
+	);
+
+	$wp_customize->add_control(
+		new WP_Customize_Image_Control(
+			$wp_customize,
+			'acme_author_bio_image',
+			array(
+				'label'       => __( 'Author Bio Image', 'acme' ),
+				'section'     => 'acme_author_bio',
+				'settings'    => 'acme_author_bio_image',
+				'description' => __( 'Upload or choose the portrait shown in the author bio card.', 'acme' ),
+			)
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_author_bio_heading',
+		array(
+			'default'           => __( 'Hi, I’m Alex', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_author_bio_heading',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_author_bio',
+			'label'       => __( 'Heading', 'acme' ),
+			'description' => __( 'Main heading text displayed next to the portrait.', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_author_bio_description',
+		array(
+			'default'           => __( 'Writer, product person, long-form enthusiast. Weekly essays on craft, clarity, and living with more intention.', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_author_bio_description',
+		array(
+			'type'        => 'textarea',
+			'section'     => 'acme_author_bio',
+			'label'       => __( 'Description', 'acme' ),
+			'description' => __( 'Short bio text shown beneath the heading.', 'acme' ),
+		)
+	);
+}
+add_action( 'customize_register', 'acme_customize_register' );
+
+/**
+ * Sanitize the author bio image setting.
+ *
+ * @param mixed $value Value input from the Customizer.
+ * @return int|string Sanitized attachment ID or URL.
+ */
+function acme_sanitize_author_bio_image( $value ) {
+	if ( is_numeric( $value ) ) {
+		return absint( $value );
+	}
+
+	if ( is_string( $value ) ) {
+		$value = trim( $value );
+
+		if ( filter_var( $value, FILTER_VALIDATE_URL ) ) {
+			return esc_url_raw( $value );
+		}
+	}
+
+	return '';
+}
+
+/**
  * Output skip link target helper.
  */
 function acme_skip_link_target() {
