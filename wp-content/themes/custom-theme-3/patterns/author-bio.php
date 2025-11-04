@@ -9,26 +9,58 @@
 <div class="wp-block-group acme-author-card">
 	<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","orientation":"horizontal","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"1.5rem"}}} -->
 	<div class="wp-block-group">
-		<!-- wp:avatar {"size":96,"style":{"border":{"radius":"999px"}}} /-->
+		<!-- wp:html -->
+		<div class="acme-author-card__avatar">
+		<?php
+		$acme_author_image_id = get_theme_mod( 'acme_author_bio_image', '' );
+			$acme_author_image    = '';
+
+			if ( $acme_author_image_id ) {
+				if ( is_numeric( $acme_author_image_id ) ) {
+					$acme_author_image = wp_get_attachment_image(
+						(int) $acme_author_image_id,
+						'thumbnail',
+						false,
+						array(
+							'class'   => 'acme-author-card__image',
+							'loading' => 'lazy',
+							'alt'     => esc_attr__( 'Author portrait', 'acme' ),
+						)
+					);
+				} else {
+					$acme_author_image = sprintf(
+						'<img class="acme-author-card__image" src="%1$s" alt="%2$s" loading="lazy" />',
+						esc_url( $acme_author_image_id ),
+						esc_attr__( 'Author portrait', 'acme' )
+					);
+				}
+			}
+
+			if ( ! $acme_author_image ) {
+				$acme_author_image = get_avatar(
+					get_current_user_id(),
+					96,
+					'',
+					esc_attr__( 'Author portrait', 'acme' ),
+					array(
+						'class' => 'acme-author-card__image avatar',
+					)
+				);
+			}
+
+			echo $acme_author_image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
+		</div>
+		<!-- /wp:html -->
 
 		<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"0.5rem"}}} -->
 		<div class="wp-block-group">
 			<!-- wp:heading {"level":3,"fontSize":"lg"} -->
-			<h3 class="wp-block-heading has-lg-font-size"><?php echo esc_html__( 'Hi, I’m Alex', 'acme' ); ?></h3>
+			<h3 class="wp-block-heading has-lg-font-size"><?php echo wp_kses_post( get_theme_mod( 'acme_author_bio_heading', esc_html__( 'Hi, I’m Alex', 'acme' ) ) ); ?></h3>
 			<!-- /wp:heading -->
 			<!-- wp:paragraph {"fontSize":"md"} -->
-			<p class="has-md-font-size"><?php echo esc_html__( 'Writer, product person, long-form enthusiast. Weekly essays on craft, clarity, and living with more intention.', 'acme' ); ?></p>
+			<p class="has-md-font-size"><?php echo wp_kses_post( get_theme_mod( 'acme_author_bio_description', esc_html__( 'Writer, product person, long-form enthusiast. Weekly essays on craft, clarity, and living with more intention.', 'acme' ) ) ); ?></p>
 			<!-- /wp:paragraph -->
-			<!-- wp:buttons {"layout":{"type":"flex","flexWrap":"wrap"},"style":{"spacing":{"blockGap":"0.75rem"}}} -->
-			<div class="wp-block-buttons">
-				<!-- wp:button {"backgroundColor":"accent","textColor":"background"} -->
-				<div class="wp-block-button"><a class="wp-block-button__link has-accent-background-color has-background-color has-text-color has-background" href="#"><?php echo esc_html__( 'Follow', 'acme' ); ?></a></div>
-				<!-- /wp:button -->
-				<!-- wp:button {"className":"is-style-outline"} -->
-				<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#"><?php echo esc_html__( 'Latest posts', 'acme' ); ?></a></div>
-				<!-- /wp:button -->
-			</div>
-			<!-- /wp:buttons -->
 		</div>
 		<!-- /wp:group -->
 	</div>
