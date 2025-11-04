@@ -12,8 +12,8 @@
 	<div class="wp-block-group">
 		<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"1rem"}},"className":"acme-hero__content"} -->
 		<div class="wp-block-group acme-hero__content">
-			<!-- wp:paragraph {"style":{"color":{"text":"var:preset|color|accent"},"typography":{"letterSpacing":"0.2em","textTransform":"uppercase","fontSize":"0.85rem","fontWeight":"600"}},"fontFamily":"inter-sans"} -->
-			<p class="has-text-color has-inter-sans-font-family" style="color:var(--wp--preset--color--accent);letter-spacing:0.2em;text-transform:uppercase;font-size:0.85rem;font-weight:600"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_eyebrow', esc_html__( 'Featured insight', 'acme' ) ) ); ?></p>
+<!-- wp:paragraph {"style":{"color":{"text":"var:preset|color|accent"},"typography":{"letterSpacing":"0.2em","textTransform":"uppercase","fontSize":"0.85rem","fontWeight":"600"}},"fontFamily":"arial-sans"} -->
+<p class="has-text-color has-arial-sans-font-family" style="color:var(--wp--preset--color--accent);letter-spacing:0.2em;text-transform:uppercase;font-size:0.85rem;font-weight:600"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_eyebrow', esc_html__( 'Featured insight', 'acme' ) ) ); ?></p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:heading {"level":1,"fontSize":"xxl"} -->
@@ -47,12 +47,12 @@
 			<div class="wp-block-group">
 				<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"0.5rem"}}} -->
 				<div class="wp-block-group">
-					<!-- wp:paragraph {"fontSize":"lg","fontFamily":"charter-serif","style":{"typography":{"lineHeight":"1.6","fontStyle":"italic"}}} -->
-					<p class="has-lg-font-size has-charter-serif-font-family" style="font-style:italic;line-height:1.6"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_quote', esc_html__( '“Publishing on this theme feels effortless. Every post looks premium without the heavy tooling.”', 'acme' ) ) ); ?></p>
+				<!-- wp:paragraph {"fontSize":"lg","fontFamily":"arial-serif","style":{"typography":{"lineHeight":"1.6","fontStyle":"italic"}}} -->
+				<p class="has-lg-font-size has-arial-serif-font-family" style="font-style:italic;line-height:1.6"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_quote', esc_html__( '“Publishing on this theme feels effortless. Every post looks premium without the heavy tooling.”', 'acme' ) ) ); ?></p>
 					<!-- /wp:paragraph -->
 
-					<!-- wp:paragraph {"textColor":"muted","fontFamily":"inter-sans","style":{"typography":{"letterSpacing":"0.18em","textTransform":"uppercase","fontSize":"0.8rem","fontWeight":"600"}}} -->
-					<p class="has-muted-color has-text-color has-inter-sans-font-family" style="letter-spacing:0.18em;text-transform:uppercase;font-size:0.8rem;font-weight:600"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_quote_attribution', esc_html__( 'Reader feedback', 'acme' ) ) ); ?></p>
+				<!-- wp:paragraph {"textColor":"muted","fontFamily":"arial-sans","style":{"typography":{"letterSpacing":"0.18em","textTransform":"uppercase","fontSize":"0.8rem","fontWeight":"600"}}} -->
+				<p class="has-muted-color has-text-color has-arial-sans-font-family" style="letter-spacing:0.18em;text-transform:uppercase;font-size:0.8rem;font-weight:600"><?php echo wp_kses_post( get_theme_mod( 'acme_hero_quote_attribution', esc_html__( 'Reader feedback', 'acme' ) ) ); ?></p>
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->

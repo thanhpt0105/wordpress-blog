@@ -120,7 +120,7 @@ body {
 }
 
 .wp-block-navigation {
-	font-family: var(--wp--preset--font-family--inter-sans);
+	font-family: var(--wp--preset--font-family--arial-sans);
 	font-weight: 500;
 }
 
@@ -156,7 +156,7 @@ body {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
-	font-family: var(--wp--preset--font-family--inter-sans);
+	font-family: var(--wp--preset--font-family--arial-sans);
 	font-size: 0.9rem;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
@@ -360,7 +360,16 @@ body {
 }
 
 .footer-social {
-	gap: 0.85rem;
+	display: flex;
+	justify-content: center;
+	gap: 0.65rem;
+	padding: 0;
+}
+
+.footer-social-wrapper {
+	display: flex;
+	width: 100%;
+	justify-content: center;
 }
 
 .footer-social .wp-social-link {
@@ -466,6 +475,23 @@ body {
 @media (max-width: 768px) {
 	.site-header__inner {
 		padding: 0.65rem 0;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.wp-block-navigation {
+		width: 100%;
+	}
+
+	.wp-block-navigation > div {
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1rem 1.25rem;
+	}
+
+	.footer-social {
+		gap: 0.55rem;
 	}
 
 	.acme-author-card {
@@ -486,6 +512,14 @@ body {
 
 	.site-header__inner {
 		padding: 0.5rem 0;
+	}
+
+	.wp-block-navigation > div {
+		gap: 0.75rem 1rem;
+	}
+
+	.footer-social {
+		gap: 0.45rem;
 	}
 }
 
