@@ -49,6 +49,7 @@ jobs:
             ARCHIVE="/tmp/wp-content.tar.gz"
             DEPLOY_PATH="$REMOTE_PATH"
             BACKUP="/tmp/wp-content-backup-$(date +%Y%m%d%H%M%S).tar.gz"
+            TMP_DIR="/tmp/wp-content-deploy-$(date +%Y%m%d%H%M%S)"
 
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "Creating remote path $DEPLOY_PATH"
@@ -60,11 +61,19 @@ jobs:
               tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content
             fi
 
-            echo "Extracting new wp-content into $DEPLOY_PATH"
-            tar -xzf "$ARCHIVE" -C "$DEPLOY_PATH"
+            echo "Preparing temporary extraction directory $TMP_DIR"
+            mkdir -p "$TMP_DIR"
+
+            echo "Extracting archive for staging"
+            tar --no-same-owner --no-same-permissions -xzf "$ARCHIVE" -C "$TMP_DIR"
+
+            echo "Syncing staged content into $DEPLOY_PATH/wp-content"
+            mkdir -p "$DEPLOY_PATH/wp-content"
+            rsync -a --delete "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"
 
             echo "Cleaning up remote artifacts"
             rm -f "$ARCHIVE"
+            rm -rf "$TMP_DIR"
 
       - name: Remove archive from runner
         run: rm -f wp-content.tar.gz
