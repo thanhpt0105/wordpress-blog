@@ -72,7 +72,9 @@ jobs:
 
             echo "Syncing staged content into $DEPLOY_PATH/wp-content"
             mkdir -p "$DEPLOY_PATH/wp-content"
+            # Never touch wp-content/uploads because media is managed on production.
             if ! rsync -rlv --delete \
+              --exclude='uploads/**' \
               --exclude='mu-plugins/**' \
               --exclude='cache/**' \
               --exclude='upgrade/**' \
