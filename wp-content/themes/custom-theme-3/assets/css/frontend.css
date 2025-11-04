@@ -567,6 +567,10 @@ body {
 body.is-dark-mode {
 	background-color: var(--wp--preset--color--dark-background);
 	color: var(--wp--preset--color--dark-foreground);
+	--wp--preset--color--foreground: var(--wp--preset--color--dark-foreground);
+	--wp--preset--color--background: var(--wp--preset--color--dark-background);
+	--wp--preset--color--surface: var(--wp--preset--color--dark-surface);
+	--wp--preset--color--muted: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 60%, transparent);
 }
 
 body.is-dark-mode .site-header {
