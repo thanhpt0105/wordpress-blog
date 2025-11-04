@@ -197,6 +197,198 @@ function acme_customize_register( $wp_customize ) {
 			'description' => __( 'Short bio text shown beneath the heading.', 'acme' ),
 		)
 	);
+
+	$wp_customize->add_section(
+		'acme_hero_feature',
+		array(
+			'title'       => __( 'Hero Feature', 'acme' ),
+			'description' => __( 'Content for the homepage hero card.', 'acme' ),
+			'priority'    => 165,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_eyebrow',
+		array(
+			'default'           => __( 'Featured insight', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_eyebrow',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Eyebrow Label', 'acme' ),
+			'description' => __( 'Short label shown above the hero heading.', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_heading',
+		array(
+			'default'           => __( 'Share ideas worth reading.', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_heading',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Heading', 'acme' ),
+			'description' => __( 'Main hero headline.', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_subheading',
+		array(
+			'default'           => __( 'A minimalist space for long-form storytelling. Publish faster, focus harder, and give readers the calm they crave.', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_subheading',
+		array(
+			'type'        => 'textarea',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Subheading', 'acme' ),
+			'description' => __( 'Supporting copy under the main headline.', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_primary_label',
+		array(
+			'default'           => __( 'Start reading', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_primary_label',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Primary Button Label', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_primary_link',
+		array(
+			'default'           => '#latest',
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'esc_url_raw',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_primary_link',
+		array(
+			'type'        => 'url',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Primary Button Link', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_secondary_label',
+		array(
+			'default'           => __( 'About the author', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_secondary_label',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Secondary Button Label', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_secondary_link',
+		array(
+			'default'           => '#',
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'esc_url_raw',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_secondary_link',
+		array(
+			'type'        => 'url',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Secondary Button Link', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_quote',
+		array(
+			'default'           => __( '“Publishing on this theme feels effortless. Every post looks premium without the heavy tooling.”', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_quote',
+		array(
+			'type'        => 'textarea',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Testimonial Quote', 'acme' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'acme_hero_quote_attribution',
+		array(
+			'default'           => __( 'Reader feedback', 'acme' ),
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+
+	$wp_customize->add_control(
+		'acme_hero_quote_attribution',
+		array(
+			'type'        => 'text',
+			'section'     => 'acme_hero_feature',
+			'label'       => __( 'Testimonial Attribution', 'acme' ),
+		)
+	);
 }
 add_action( 'customize_register', 'acme_customize_register' );
 
