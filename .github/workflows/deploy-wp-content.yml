@@ -72,7 +72,7 @@ jobs:
 
             echo "Syncing staged content into $DEPLOY_PATH/wp-content"
             mkdir -p "$DEPLOY_PATH/wp-content"
-            rsync -rtlv --delete \
+            if ! rsync -rlv --delete \
               --exclude='mu-plugins/**' \
               --exclude='cache/**' \
               --exclude='upgrade/**' \
@@ -81,7 +81,15 @@ jobs:
               --exclude='object-cache.php' \
               --exclude='.htaccess' \
               --exclude='.user.ini' \
-              "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"
+              --omit-dir-times \
+              --no-perms \
+              --no-owner \
+              --no-group \
+              --ignore-errors \
+              --size-only \
+              "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
+              echo "Warning: rsync reported issues during sync. Review output above."
+            fi
 
             echo "Cleaning up remote artifacts"
             rm -f "$ARCHIVE"
