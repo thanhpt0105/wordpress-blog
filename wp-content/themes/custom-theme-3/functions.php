@@ -96,6 +96,53 @@ function acme_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'acme_enqueue_assets' );
 
 /**
+ * Inline a tiny script that applies the persisted color mode class
+ * before the main module executes to avoid a flash of light theme.
+ */
+function acme_output_initial_color_mode_script() {
+	?>
+	<script>
+	(function() {
+		var className = 'is-dark-mode';
+		var storageKey = 'acme-color-mode';
+		var root = document.documentElement;
+		var mode = 'light';
+
+		try {
+			var stored = window.localStorage.getItem(storageKey);
+			if (stored === 'dark' || stored === 'light') {
+				mode = stored;
+			} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				mode = 'dark';
+			}
+		} catch (error) {
+			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				mode = 'dark';
+			}
+		}
+
+		root.classList.toggle(className, mode === 'dark');
+		root.style.colorScheme = mode === 'dark' ? 'dark' : 'light';
+
+		var applyToBody = function() {
+			if (!document.body) {
+				return;
+			}
+			document.body.classList.toggle(className, mode === 'dark');
+		};
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', applyToBody, { once: true });
+		} else {
+			applyToBody();
+		}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_head', 'acme_output_initial_color_mode_script', 0 );
+
+/**
  * Editor-only assets.
  */
 function acme_enqueue_block_editor_assets() {

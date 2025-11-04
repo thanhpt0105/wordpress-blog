@@ -564,6 +564,7 @@ body {
 }
 
 /* Dark mode */
+html.is-dark-mode body,
 body.is-dark-mode {
 	background-color: var(--wp--preset--color--dark-background);
 	color: var(--wp--preset--color--dark-foreground);
@@ -573,44 +574,57 @@ body.is-dark-mode {
 	--wp--preset--color--muted: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 60%, transparent);
 }
 
+html.is-dark-mode body .site-header,
 body.is-dark-mode .site-header {
 	background-color: color-mix(in srgb, var(--wp--preset--color--dark-background) 90%, transparent);
 	border-bottom-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 12%, transparent);
 }
 
+html.is-dark-mode body .site-header__categories,
 body.is-dark-mode .site-header__categories {
 	border-top-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 10%, transparent);
 }
 
+html.is-dark-mode body .site-header__toggle,
 body.is-dark-mode .site-header__toggle {
 	border-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 12%, transparent);
 	background-color: color-mix(in srgb, var(--wp--preset--color--dark-surface) 90%, transparent);
 	color: var(--wp--preset--color--dark-foreground);
 }
 
+html.is-dark-mode body .site-header__toggle[data-mode="dark"],
+html.is-dark-mode body .site-header__toggle.is-dark,
 body.is-dark-mode .site-header__toggle[data-mode="dark"],
 body.is-dark-mode .site-header__toggle.is-dark {
 	background-color: var(--wp--preset--color--accent);
 	color: var(--wp--preset--color--background);
 }
 
+html.is-dark-mode body .footer-social-wrapper,
 body.is-dark-mode .footer-social-wrapper {
 	--acme-footer-social-icon-color: var(--wp--preset--color--dark-foreground);
 	--acme-footer-social-bg: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 40%, transparent);
 }
 
+html.is-dark-mode body .acme-author-card,
 body.is-dark-mode .acme-author-card {
 	background-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 10%, transparent);
 }
 
+html.is-dark-mode body .acme-related-posts,
 body.is-dark-mode .acme-related-posts {
 	border-top-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 15%, transparent);
 }
 
+html.is-dark-mode body .comment,
 body.is-dark-mode .comment {
 	border-bottom-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 15%, transparent);
 }
 
+html.is-dark-mode body .comment-form textarea,
+html.is-dark-mode body .comment-form input[type="text"],
+html.is-dark-mode body .comment-form input[type="email"],
+html.is-dark-mode body .comment-form input[type="url"],
 body.is-dark-mode .comment-form textarea,
 body.is-dark-mode .comment-form input[type="text"],
 body.is-dark-mode .comment-form input[type="email"],
@@ -620,10 +634,13 @@ body.is-dark-mode .comment-form input[type="url"] {
 	color: var(--wp--preset--color--dark-foreground);
 }
 
+html.is-dark-mode body .wp-block-code code,
 body.is-dark-mode .wp-block-code code {
 	background-color: color-mix(in srgb, var(--wp--preset--color--accent) 15%, transparent);
 }
 
+html.is-dark-mode body .acme-floating-share a,
+html.is-dark-mode body .acme-floating-share button,
 body.is-dark-mode .acme-floating-share a,
 body.is-dark-mode .acme-floating-share button {
 	border-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 20%, transparent);
