@@ -1,0 +1,70 @@
+name: Deploy wp-content
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "wp-content/**"
+      - ".github/workflows/deploy-wp-content.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Upload wp-content to GoDaddy
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' }}
+    env:
+      REMOTE_PATH: ${{ secrets.GD_REMOTE_PATH }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compress wp-content
+        run: |
+          tar -czf wp-content.tar.gz wp-content
+
+      - name: Upload archive via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.GD_SFTP_HOST }}
+          username: ${{ secrets.GD_SFTP_USER }}
+          password: ${{ secrets.GD_SFTP_PASSWORD }}
+          port: ${{ secrets.GD_SFTP_PORT || 22 }}
+          source: wp-content.tar.gz
+          target: /tmp
+          overwrite: true
+
+      - name: Deploy on GoDaddy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.GD_SFTP_HOST }}
+          username: ${{ secrets.GD_SFTP_USER }}
+          password: ${{ secrets.GD_SFTP_PASSWORD }}
+          port: ${{ secrets.GD_SFTP_PORT || 22 }}
+          script: |
+            set -euo pipefail
+
+            REMOTE_PATH="${REMOTE_PATH:-html}"
+            ARCHIVE="/tmp/wp-content.tar.gz"
+            DEPLOY_PATH="$REMOTE_PATH"
+            BACKUP="/tmp/wp-content-backup-$(date +%Y%m%d%H%M%S).tar.gz"
+
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              echo "Creating remote path $DEPLOY_PATH"
+              mkdir -p "$DEPLOY_PATH"
+            fi
+
+            if [ -d "$DEPLOY_PATH/wp-content" ]; then
+              echo "Creating backup archive at $BACKUP"
+              tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content
+            fi
+
+            echo "Extracting new wp-content into $DEPLOY_PATH"
+            tar -xzf "$ARCHIVE" -C "$DEPLOY_PATH"
+
+            echo "Cleaning up remote artifacts"
+            rm -f "$ARCHIVE"
+
+      - name: Remove archive from runner
+        run: rm -f wp-content.tar.gz
