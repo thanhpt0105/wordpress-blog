@@ -359,37 +359,54 @@ body {
 	background: color-mix(in srgb, var(--wp--preset--color--background) 95%, transparent);
 }
 
-.footer-social {
-	display: flex;
-	justify-content: center;
-	gap: 0.65rem;
-	padding: 0;
-}
-
 .footer-social-wrapper {
 	display: flex;
 	width: 100%;
 	justify-content: center;
+	--acme-footer-social-icon-color: var(--wp--preset--color--muted);
+	--acme-footer-social-bg: color-mix(in srgb, var(--wp--preset--color--surface) 70%, transparent);
+	--wp--social-links--icon-color: var(--acme-footer-social-icon-color);
+	--wp--social-links--icon-background-color: var(--acme-footer-social-bg);
 }
 
-.footer-social .wp-social-link {
+.footer-social,
+.footer-social-wrapper .wp-block-social-links {
+	display: flex;
+	justify-content: center;
+	gap: 0.65rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	color: var(--acme-footer-social-icon-color) !important;
+}
+
+.footer-social-wrapper .wp-social-link {
+	color: var(--acme-footer-social-icon-color) !important;
 	transition: transform var(--acme-transition), color var(--acme-transition), background-color var(--acme-transition);
 }
 
-.footer-social .wp-social-link a {
-	color: var(--wp--preset--color--muted);
-	background: color-mix(in srgb, var(--wp--preset--color--surface) 80%, transparent);
+.footer-social-wrapper .wp-social-link .wp-block-social-link-anchor {
+	color: var(--acme-footer-social-icon-color) !important;
+	background: var(--acme-footer-social-bg) !important;
 	border-radius: 999px;
-	padding: 0.35rem 0.75rem;
+	padding: 0.4rem;
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 0.35rem;
+	min-width: 2.25rem;
 }
 
-.footer-social .wp-social-link:hover a,
-.footer-social .wp-social-link:focus-within a {
-	color: var(--wp--preset--color--accent);
-	background: color-mix(in srgb, var(--wp--preset--color--accent) 15%, transparent);
+.footer-social-wrapper .wp-social-link svg,
+.footer-social-wrapper .wp-social-link svg * {
+	fill: currentColor !important;
+	stroke: currentColor !important;
+}
+
+.footer-social-wrapper .wp-social-link:hover .wp-block-social-link-anchor,
+.footer-social-wrapper .wp-social-link:focus-within .wp-block-social-link-anchor {
+	color: var(--wp--preset--color--accent) !important;
+	background: color-mix(in srgb, var(--wp--preset--color--accent) 20%, transparent) !important;
 	transform: translateY(-1px);
 }
 
@@ -571,6 +588,11 @@ body.is-dark-mode .site-header__toggle[data-mode="dark"],
 body.is-dark-mode .site-header__toggle.is-dark {
 	background-color: var(--wp--preset--color--accent);
 	color: var(--wp--preset--color--background);
+}
+
+body.is-dark-mode .footer-social-wrapper {
+	--acme-footer-social-icon-color: var(--wp--preset--color--dark-foreground);
+	--acme-footer-social-bg: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 40%, transparent);
 }
 
 body.is-dark-mode .acme-author-card {
