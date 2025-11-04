@@ -646,3 +646,6 @@ body.is-dark-mode .acme-floating-share button {
 	border-color: color-mix(in srgb, var(--wp--preset--color--dark-foreground) 20%, transparent);
 	background-color: color-mix(in srgb, var(--wp--preset--color--dark-background) 92%, transparent);
 }
+.acme-author-avatar img {
+	object-fit: cover;
+}

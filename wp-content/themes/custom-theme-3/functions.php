@@ -95,6 +95,8 @@ function acme_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'acme_enqueue_assets' );
 
+require_once __DIR__ . '/inc/user-avatar.php';
+
 /**
  * Inline a tiny script that applies the persisted color mode class
  * before the main module executes to avoid a flash of light theme.
