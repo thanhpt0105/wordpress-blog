@@ -58,7 +58,10 @@ jobs:
 
             if [ -d "$DEPLOY_PATH/wp-content" ]; then
               echo "Creating backup archive at $BACKUP"
-              tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content
+              if ! tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content 2>/tmp/wp-content-backup.log; then
+                echo "Warning: backup encountered issues. Continuing deployment."
+                cat /tmp/wp-content-backup.log || true
+              fi
             fi
 
             echo "Preparing temporary extraction directory $TMP_DIR"
@@ -83,6 +86,7 @@ jobs:
             echo "Cleaning up remote artifacts"
             rm -f "$ARCHIVE"
             rm -rf "$TMP_DIR"
+            rm -f /tmp/wp-content-backup.log
 
       - name: Remove archive from runner
         run: rm -f wp-content.tar.gz
