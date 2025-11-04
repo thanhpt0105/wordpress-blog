@@ -10,7 +10,7 @@ Custom Theme 3 is a typography-first, distraction-free block theme built for wri
 
 ## Key Features
 
-- Medium-inspired layout with a centered 740 px content column, generous white space, and fluid typography (Inter + Charter).
+- Medium-inspired layout with a centered 740 px content column, generous white space, and fluid typography (Arial system stack).
 - Sticky minimal header with dark/light toggle, skip link, and responsive navigation.
 - Dark mode (auto-detect + manual toggle) with persistent preference using local storage.
 - Reading progress bar, estimated reading time shortcode (`[acme_estimated_reading_time]`), and floating share buttons (`[acme_share_bar]` on single posts).

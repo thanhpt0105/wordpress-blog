@@ -52,13 +52,6 @@ function acme_enqueue_assets() {
 	$theme_version = wp_get_theme()->get( 'Version' );
 
 	wp_enqueue_style(
-		'acme-fonts',
-		'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Charter&display=swap',
-		array(),
-		null
-	);
-
-	wp_enqueue_style(
 		'acme-frontend',
 		get_theme_file_uri( 'assets/css/frontend.css' ),
 		array(),

@@ -120,7 +120,7 @@ body {
 }
 
 .wp-block-navigation {
-	font-family: var(--wp--preset--font-family--inter-sans);
+	font-family: var(--wp--preset--font-family--arial-sans);
 	font-weight: 500;
 }
 
@@ -156,7 +156,7 @@ body {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
-	font-family: var(--wp--preset--font-family--inter-sans);
+	font-family: var(--wp--preset--font-family--arial-sans);
 	font-size: 0.9rem;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
