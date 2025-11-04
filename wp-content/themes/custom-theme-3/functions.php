@@ -125,6 +125,15 @@ function acme_customize_register( $wp_customize ) {
 		)
 	);
 
+	$wp_customize->add_section(
+		'acme_footer_socials',
+		array(
+			'title'       => __( 'Footer Social Links', 'acme' ),
+			'description' => __( 'URLs for the social icons displayed in the footer.', 'acme' ),
+			'priority'    => 170,
+		)
+	);
+
 	$wp_customize->add_setting(
 		'acme_author_bio_image',
 		array(
@@ -190,6 +199,43 @@ function acme_customize_register( $wp_customize ) {
 			'description' => __( 'Short bio text shown beneath the heading.', 'acme' ),
 		)
 	);
+
+	$footer_social_settings = array(
+		'acme_footer_facebook'  => array(
+			'label'   => __( 'Facebook URL', 'acme' ),
+			'default' => 'https://www.facebook.com/',
+		),
+		'acme_footer_instagram' => array(
+			'label'   => __( 'Instagram URL', 'acme' ),
+			'default' => 'https://www.instagram.com/',
+		),
+		'acme_footer_linkedin'  => array(
+			'label'   => __( 'LinkedIn URL', 'acme' ),
+			'default' => 'https://www.linkedin.com/',
+		),
+	);
+
+	foreach ( $footer_social_settings as $setting_id => $meta ) {
+		$wp_customize->add_setting(
+			$setting_id,
+			array(
+				'default'           => $meta['default'],
+				'type'              => 'theme_mod',
+				'capability'        => 'edit_theme_options',
+				'transport'         => 'refresh',
+				'sanitize_callback' => 'esc_url_raw',
+			)
+		);
+
+		$wp_customize->add_control(
+			$setting_id,
+			array(
+				'type'        => 'url',
+				'section'     => 'acme_footer_socials',
+				'label'       => $meta['label'],
+			)
+		);
+	}
 
 	$wp_customize->add_section(
 		'acme_hero_feature',
@@ -587,6 +633,60 @@ function acme_share_bar_shortcode() {
 	return ob_get_clean();
 }
 add_shortcode( 'acme_share_bar', 'acme_share_bar_shortcode' );
+
+/**
+ * Shortcode: footer social icons.
+ *
+ * @return string
+ */
+function acme_footer_socials_shortcode() {
+	$profiles = array(
+		array(
+			'service' => 'facebook',
+			'label'   => __( 'Facebook', 'acme' ),
+			'url'     => get_theme_mod( 'acme_footer_facebook', '' ),
+		),
+		array(
+			'service' => 'instagram',
+			'label'   => __( 'Instagram', 'acme' ),
+			'url'     => get_theme_mod( 'acme_footer_instagram', '' ),
+		),
+		array(
+			'service' => 'linkedin',
+			'label'   => __( 'LinkedIn', 'acme' ),
+			'url'     => get_theme_mod( 'acme_footer_linkedin', '' ),
+		),
+	);
+
+    $profiles = array_filter(
+        $profiles,
+        function ( $item ) {
+            return ! empty( $item['url'] );
+        }
+    );
+
+    if ( empty( $profiles ) ) {
+        return '';
+    }
+
+    $inner_blocks = '';
+    foreach ( $profiles as $item ) {
+        $block = array(
+            'service' => $item['service'],
+            'url'     => esc_url_raw( $item['url'] ),
+            'label'   => $item['label'],
+        );
+        $inner_blocks .= sprintf(
+            '<!-- wp:social-link %s /-->',
+            wp_json_encode( $block )
+        );
+    }
+
+    $wrapper = '<!-- wp:social-links {"openInNewTab":true,"className":"footer-social","layout":{"type":"flex","justifyContent":"right"}} -->%s<!-- /wp:social-links -->';
+
+    return do_blocks( sprintf( $wrapper, $inner_blocks ) );
+}
+add_shortcode( 'acme_footer_socials', 'acme_footer_socials_shortcode' );
 
 /**
  * Shortcode: footer note with dynamic year/site name.
