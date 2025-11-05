@@ -95,46 +95,6 @@ function personalblog_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'personalblog_enqueue_assets' );
 
-/**
- * Add aggressive no-cache headers to prevent Cloudflare and browser caching issues.
- * This ensures category menu updates are visible immediately.
- */
-function personalblog_add_no_cache_headers() {
-	// Skip for static assets
-	if ( is_admin() ) {
-		return;
-	}
-	
-	// Get current URL
-	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
-	
-	// Skip if it's a static asset
-	if ( preg_match( '/\.(css|js|jpg|jpeg|png|gif|webp|svg|woff|woff2|ttf|eot|ico)$/i', $request_uri ) ) {
-		return;
-	}
-	
-	// Remove any existing cache headers
-	header_remove( 'Cache-Control' );
-	header_remove( 'Pragma' );
-	header_remove( 'Expires' );
-	
-	// Set aggressive no-cache headers for HTML pages
-	header( 'Cache-Control: no-cache, no-store, must-revalidate, max-age=0', true );
-	header( 'Pragma: no-cache', true );
-	header( 'Expires: 0', true );
-	
-	// Cloudflare-specific headers
-	header( 'CDN-Cache-Control: no-cache', true );
-	header( 'CF-Cache-Status: BYPASS', true );
-	
-	// Add ETag based on last category update for conditional requests
-	$last_modified = get_option( 'personalblog_category_menu_version', time() );
-	header( 'ETag: "' . md5( $last_modified ) . '"', true );
-	header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $last_modified ) . ' GMT', true );
-}
-add_action( 'send_headers', 'personalblog_add_no_cache_headers', 1 );
-add_action( 'template_redirect', 'personalblog_add_no_cache_headers', 1 );
-
 require_once __DIR__ . '/inc/user-avatar.php';
 
 /**
@@ -697,22 +657,11 @@ function personalblog_related_posts_shortcode() {
 add_shortcode( 'personalblog_related_posts', 'personalblog_related_posts_shortcode' );
 
 /**
- * Category menu shortcode with cache busting.
+ * Category menu shortcode.
  *
  * @return string
  */
 function personalblog_category_menu_shortcode() {
-	// Get cache key version based on last category update
-	$cache_key = 'personalblog_category_menu';
-	$cache_version = get_option( 'personalblog_category_menu_version', time() );
-	$cache_key_with_version = $cache_key . '_' . $cache_version;
-	
-	// Try to get from transient cache
-	$cached = get_transient( $cache_key_with_version );
-	if ( false !== $cached && ! is_user_logged_in() ) {
-		return $cached;
-	}
-	
 	$categories = get_categories( array(
 		'orderby'    => 'name',
 		'order'      => 'ASC',
@@ -745,43 +694,9 @@ function personalblog_category_menu_shortcode() {
 		</ul>
 	</div>
 	<?php
-	$output = ob_get_clean();
-	
-	// Cache for 1 hour
-	set_transient( $cache_key_with_version, $output, HOUR_IN_SECONDS );
-	
-	return $output;
+	return ob_get_clean();
 }
 add_shortcode( 'personalblog_category_menu', 'personalblog_category_menu_shortcode' );
-
-/**
- * Clear category menu cache when categories are created, updated, or deleted.
- */
-function personalblog_clear_category_menu_cache() {
-	// Update version to invalidate all cached versions
-	update_option( 'personalblog_category_menu_version', time() );
-	
-	// Also delete all old transients
-	global $wpdb;
-	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_personalblog_category_menu_%' OR option_name LIKE '_transient_timeout_personalblog_category_menu_%'" );
-}
-add_action( 'created_category', 'personalblog_clear_category_menu_cache' );
-add_action( 'edited_category', 'personalblog_clear_category_menu_cache' );
-add_action( 'delete_category', 'personalblog_clear_category_menu_cache' );
-add_action( 'created_post_tag', 'personalblog_clear_category_menu_cache' );
-add_action( 'edited_post_tag', 'personalblog_clear_category_menu_cache' );
-
-/**
- * Also clear cache when a post is published or updated (category assignment might change).
- */
-function personalblog_clear_category_menu_on_post_save( $post_id, $post, $update ) {
-	// Only for published posts
-	if ( 'publish' === $post->post_status && 'post' === $post->post_type ) {
-		personalblog_clear_category_menu_cache();
-	}
-}
-add_action( 'save_post', 'personalblog_clear_category_menu_on_post_save', 10, 3 );
-
 
 /**
  * Shortcode: floating share buttons.
