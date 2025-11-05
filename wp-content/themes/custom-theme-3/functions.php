@@ -1132,10 +1132,54 @@ function acme_add_nocache_headers() {
 		return;
 	}
 
-	// Allow caching, but ensure freshness is checked
-	header( 'Cache-Control: public, max-age=300, must-revalidate' ); // Cache for 5 minutes, then revalidate
+	// Remove any existing cache headers that might have been set
+	header_remove('Cache-Control');
+	header_remove('Pragma');
+	header_remove('Expires');
+	
+	// Set short cache time with revalidation
+	header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
+	header( 'Pragma: no-cache', false );
+	header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 300 ) . ' GMT', false );
+	
+	// Add Cloudflare-specific header to respect our cache settings
+	header( 'CDN-Cache-Control: max-age=300', false );
 }
-add_action( 'send_headers', 'acme_add_nocache_headers' );
+add_action( 'send_headers', 'acme_add_nocache_headers', 1 ); // Priority 1 to run early
+
+/**
+ * Also set headers using template_redirect as a backup
+ */
+function acme_add_nocache_headers_backup() {
+	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		return;
+	}
+	
+	// Set headers again on template_redirect
+	header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
+	header( 'CDN-Cache-Control: max-age=300', false );
+}
+add_action( 'template_redirect', 'acme_add_nocache_headers_backup', 1 );
+
+/**
+ * Add a query parameter to force cache bypass and reload.
+ * Usage: https://tuno.world/?force_refresh=1
+ */
+function acme_handle_force_refresh() {
+	if ( isset( $_GET['force_refresh'] ) && ! is_admin() ) {
+		// Set no-cache headers
+		header( 'Cache-Control: no-cache, no-store, must-revalidate', true );
+		header( 'Pragma: no-cache', true );
+		header( 'Expires: 0', true );
+		header( 'CDN-Cache-Control: no-cache', true );
+		
+		// Add a comment in HTML to confirm this is working
+		add_action( 'wp_footer', function() {
+			echo '<!-- Force refresh active - cache bypassed -->';
+		}, 999 );
+	}
+}
+add_action( 'init', 'acme_handle_force_refresh', 1 );
 
 /**
  * Render the category menu in the header using wp_body_open hook.
