@@ -8,6 +8,6 @@
 ?>
 <!-- wp:group {"align":"wide","className":"site-header__categories","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center","orientation":"horizontal"},"style":{"spacing":{"padding":{"top":"0.5rem","bottom":"0.5rem"}}}} -->
 <div class="wp-block-group alignwide site-header__categories">
-	<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","justifyContent":"center","orientation":"horizontal","flexWrap":"wrap"},"style":{"spacing":{"blockGap":"var(--wp--preset--spacing--20)"}},"fontSize":"small"} /-->
+	<!-- wp:categories {"showPostCounts":false,"showHierarchy":false,"showOnlyTopLevel":true,"displayAsDropdown":false,"className":"site-header__category-list"} /-->
 </div>
 <!-- /wp:group -->
