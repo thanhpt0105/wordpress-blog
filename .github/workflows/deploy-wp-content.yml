@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "wp-content/**"
+      - ".htaccess"
       - ".github/workflows/deploy-wp-content.yml"
   workflow_dispatch:
 
@@ -22,7 +23,7 @@ jobs:
 
       - name: Compress wp-content
         run: |
-          tar -czf wp-content.tar.gz wp-content
+          tar -czf wp-content.tar.gz wp-content .htaccess
 
       - name: Upload archive via SCP
         uses: appleboy/scp-action@v0.1.7
@@ -81,7 +82,6 @@ jobs:
               --exclude='uploads/cache/**' \
               --exclude='advanced-cache.php' \
               --exclude='object-cache.php' \
-              --exclude='.htaccess' \
               --exclude='.user.ini' \
               --omit-dir-times \
               --no-perms \
@@ -91,6 +91,14 @@ jobs:
               --size-only \
               "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
               echo "Warning: rsync reported issues during sync. Review output above."
+            fi
+
+            echo "Deploying .htaccess to root directory"
+            if [ -f "$TMP_DIR/.htaccess" ]; then
+              cp "$TMP_DIR/.htaccess" "$DEPLOY_PATH/.htaccess"
+              echo ".htaccess deployed successfully"
+            else
+              echo "Warning: .htaccess not found in archive"
             fi
 
             echo "Cleaning up remote artifacts"
