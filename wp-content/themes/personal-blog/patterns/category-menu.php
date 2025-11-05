@@ -16,10 +16,25 @@
 		'hide_empty' => false, // Show all categories, even without posts
 	) );
 	
+	// Determine which category should be highlighted
+	$current_category_id = 0;
+	
+	if ( is_category() ) {
+		// On category archive page
+		$current_category_id = get_queried_object_id();
+	} elseif ( is_single() && get_post_type() === 'post' ) {
+		// On single post page - get the first category
+		$post_categories = get_the_category();
+		if ( ! empty( $post_categories ) ) {
+			$current_category_id = $post_categories[0]->term_id;
+		}
+	}
+	
 	// Debug output (only visible in HTML source)
 	echo '<!-- DEBUG: Found ' . count($categories) . ' categories -->';
+	echo '<!-- DEBUG: Current category ID: ' . $current_category_id . ' -->';
 	foreach ( $categories as $cat ) {
-		echo '<!-- Category: ' . esc_html( $cat->name ) . ' (slug: ' . $cat->slug . ', count: ' . $cat->count . ') -->';
+		echo '<!-- Category: ' . esc_html( $cat->name ) . ' (slug: ' . $cat->slug . ', count: ' . $cat->count . ', id: ' . $cat->term_id . ') -->';
 	}
 	
 	if ( ! empty( $categories ) ) {
@@ -31,7 +46,7 @@
 				continue;
 			}
 			
-			$current = is_category( $category->term_id ) ? 'current-cat' : '';
+			$current = ( $current_category_id === $category->term_id ) ? 'current-cat' : '';
 			printf(
 				'<li class="%s"><a href="%s">%s</a></li>',
 				esc_attr( $current ),
