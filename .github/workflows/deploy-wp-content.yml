@@ -92,27 +92,33 @@ jobs:
 
       - name: Deploy on GoDaddy
         uses: appleboy/ssh-action@v0.1.10
+        env:
+          DEPLOY_MODE: ${{ steps.changes.outputs.mode }}
         with:
           host: ${{ secrets.GD_SFTP_HOST }}
           username: ${{ secrets.GD_SFTP_USER }}
           password: ${{ secrets.GD_SFTP_PASSWORD }}
           port: ${{ secrets.GD_SFTP_PORT || 22 }}
+          envs: REMOTE_PATH,DEPLOY_MODE
           script: |
             set -euo pipefail
 
             REMOTE_PATH="${REMOTE_PATH:-html}"
+            DEPLOY_MODE="${DEPLOY_MODE:-incremental}"
             ARCHIVE="/tmp/wp-content.tar.gz"
             DEPLOY_PATH="$REMOTE_PATH"
             BACKUP="/tmp/wp-content-backup-$(date +%Y%m%d%H%M%S).tar.gz"
             TMP_DIR="/tmp/wp-content-deploy-$(date +%Y%m%d%H%M%S)"
+
+            echo "Deployment mode: $DEPLOY_MODE"
 
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "Creating remote path $DEPLOY_PATH"
               mkdir -p "$DEPLOY_PATH"
             fi
 
-            # Only create backup if wp-content exists and this is a full deployment
-            if [ -d "$DEPLOY_PATH/wp-content" ]; then
+            # Only create backup for full deployments
+            if [[ "$DEPLOY_MODE" == "full" ]] && [ -d "$DEPLOY_PATH/wp-content" ]; then
               echo "Creating backup archive at $BACKUP"
               if ! tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content 2>/tmp/wp-content-backup.log; then
                 echo "Warning: backup encountered issues. Continuing deployment."
@@ -125,39 +131,54 @@ jobs:
 
             echo "Extracting archive for staging"
             tar --no-same-owner --no-same-permissions -xzf "$ARCHIVE" -C "$TMP_DIR"
+            
+            echo "Extracted contents:"
+            ls -la "$TMP_DIR"
 
-            # Deploy wp-content if it exists in archive
+            # Deploy wp-content files
             if [ -d "$TMP_DIR/wp-content" ]; then
-              echo "Syncing staged content into $DEPLOY_PATH/wp-content"
-              mkdir -p "$DEPLOY_PATH/wp-content"
-              # Never touch wp-content/uploads because media is managed on production.
-              if ! rsync -rlv --delete \
-                --exclude='uploads/**' \
-                --exclude='mu-plugins/**' \
-                --exclude='cache/**' \
-                --exclude='upgrade/**' \
-                --exclude='uploads/cache/**' \
-                --exclude='advanced-cache.php' \
-                --exclude='object-cache.php' \
-                --exclude='.user.ini' \
-                --omit-dir-times \
-                --no-perms \
-                --no-owner \
-                --no-group \
-                --ignore-errors \
-                --size-only \
-                "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
-                echo "Warning: rsync reported issues during sync. Review output above."
+              echo "wp-content directory found in archive"
+              
+              # Check if it's a full deployment or incremental
+              if [[ "$DEPLOY_MODE" == "full" ]]; then
+                echo "Full deployment: Using rsync with --delete"
+                mkdir -p "$DEPLOY_PATH/wp-content"
+                if ! rsync -rlv --delete \
+                  --exclude='uploads/**' \
+                  --exclude='mu-plugins/**' \
+                  --exclude='cache/**' \
+                  --exclude='upgrade/**' \
+                  --exclude='uploads/cache/**' \
+                  --exclude='advanced-cache.php' \
+                  --exclude='object-cache.php' \
+                  --exclude='.user.ini' \
+                  --omit-dir-times \
+                  --no-perms \
+                  --no-owner \
+                  --no-group \
+                  --ignore-errors \
+                  "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
+                  echo "Warning: rsync reported issues during sync."
+                fi
+              else
+                echo "Incremental deployment: Copying changed files only"
+                # For incremental updates, recursively copy all files preserving structure
+                file_count=0
+                find "$TMP_DIR/wp-content" -type f 2>/dev/null | while IFS= read -r file; do
+                  rel_path="${file#$TMP_DIR/}"
+                  dest="$DEPLOY_PATH/$rel_path"
+                  mkdir -p "$(dirname "$dest")"
+                  if cp -v "$file" "$dest"; then
+                    echo "✓ Deployed: $rel_path"
+                    file_count=$((file_count + 1))
+                  else
+                    echo "✗ Failed: $rel_path"
+                  fi
+                done
+                echo "Deployed $file_count file(s)"
               fi
             else
-              echo "No wp-content directory in archive, syncing individual files"
-              # For incremental updates, copy individual files
-              find "$TMP_DIR/wp-content" -type f 2>/dev/null | while read file; do
-                rel_path="${file#$TMP_DIR/}"
-                dest="$DEPLOY_PATH/$rel_path"
-                mkdir -p "$(dirname "$dest")"
-                cp -v "$file" "$dest"
-              done
+              echo "Warning: No wp-content directory found in archive"
             fi
 
             echo "Deploying .htaccess to root directory"
