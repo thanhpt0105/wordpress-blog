@@ -1133,19 +1133,20 @@ function acme_add_nocache_headers() {
 	}
 
 	// Remove any existing cache headers that might have been set
-	header_remove('Cache-Control');
-	header_remove('Pragma');
-	header_remove('Expires');
-	
-	// Set short cache time with revalidation
-	header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
-	header( 'Pragma: no-cache', false );
-	header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 300 ) . ' GMT', false );
-	
-	// Add Cloudflare-specific header to respect our cache settings
-	header( 'CDN-Cache-Control: max-age=300', false );
+	if ( ! headers_sent() ) {
+		header_remove('Cache-Control');
+		header_remove('Pragma');
+		header_remove('Expires');
+		
+		// Set short cache time with revalidation - use true to REPLACE not append
+		header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
+		header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 300 ) . ' GMT', true );
+		
+		// Add Cloudflare-specific header to respect our cache settings
+		header( 'CDN-Cache-Control: max-age=300', true );
+	}
 }
-add_action( 'send_headers', 'acme_add_nocache_headers', 1 ); // Priority 1 to run early
+add_action( 'send_headers', 'acme_add_nocache_headers', 999 ); // Very late priority to override everything
 
 /**
  * Also set headers using template_redirect as a backup
@@ -1155,11 +1156,14 @@ function acme_add_nocache_headers_backup() {
 		return;
 	}
 	
-	// Set headers again on template_redirect
-	header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
-	header( 'CDN-Cache-Control: max-age=300', false );
+	if ( ! headers_sent() ) {
+		// Set headers again on template_redirect
+		header_remove('Cache-Control');
+		header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
+		header( 'CDN-Cache-Control: max-age=300', true );
+	}
 }
-add_action( 'template_redirect', 'acme_add_nocache_headers_backup', 1 );
+add_action( 'template_redirect', 'acme_add_nocache_headers_backup', 999 ); // Very late priority
 
 /**
  * Add a query parameter to force cache bypass and reload.
