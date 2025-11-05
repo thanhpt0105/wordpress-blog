@@ -1,0 +1,63 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"},"style":{"spacing":{"padding":{"top":"2rem"}}}} -->
+<main class="wp-block-group">
+	<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"margin":{"bottom":"2rem"}}}} -->
+	<div class="wp-block-group">
+		<!-- wp:heading {"level":1,"fontSize":"xxl"} -->
+		<h1 class="wp-block-heading has-xxl-font-size">All stories</h1>
+		<!-- /wp:heading -->
+		<!-- wp:paragraph {"fontSize":"md"} -->
+		<p class="has-md-font-size">Browse the latest writing, curated for thoughtful reading.</p>
+		<!-- /wp:paragraph -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"inherit":true,"layout":{"type":"constrained"},"displayLayout":{"type":"list"}} -->
+	<div class="wp-block-query">
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":1}} -->
+		<!-- wp:group {"style":{"spacing":{"blockGap":"1.5rem","padding":{"bottom":"2.5rem"},"margin":{"bottom":"2.5rem"}},"border":{"bottom":{"color":"var:preset|color|surface","width":"1px"}}},"className":"personalblog-post-card"} -->
+		<div class="wp-block-group personalblog-post-card">
+			<!-- wp:post-featured-image {"isLink":true,"height":"320px","style":{"border":{"radius":"18px"}}} /-->
+			<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap"},"style":{"spacing":{"blockGap":"0.5rem"},"typography":{"fontSize":"0.9rem"}},"className":"personalblog-post-card__meta"} -->
+			<div class="wp-block-group personalblog-post-card__meta">
+				<!-- wp:post-terms {"term":"category","className":"personalblog-post-card__category"} /-->
+				<!-- wp:post-date {"format":"M j, Y"} /-->
+				<!-- wp:shortcode -->
+				[personalblog_estimated_reading_time]
+				<!-- /wp:shortcode -->
+			</div>
+			<!-- /wp:group -->
+			<!-- wp:post-title {"isLink":true,"fontSize":"xl"} /-->
+			<!-- wp:post-excerpt {"moreText":"Continue reading"} /-->
+		</div>
+		<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-no-results -->
+		<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}}},"layout":{"type":"constrained"}} -->
+		<div class="wp-block-group">
+			<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"1.25rem"}}} -->
+			<p class="has-text-align-center">📝</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:heading {"textAlign":"center","level":2} -->
+			<h2 class="wp-block-heading has-text-align-center">No posts found</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:paragraph {"align":"center"} -->
+			<p class="has-text-align-center">There are no published posts yet. Check back soon!</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+		<!-- /wp:query-no-results -->
+	</div>
+	<!-- /wp:query -->
+
+	<!-- wp:shortcode -->
+	[personalblog_load_more]
+	<!-- /wp:shortcode -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
