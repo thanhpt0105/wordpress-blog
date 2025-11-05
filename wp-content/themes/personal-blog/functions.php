@@ -672,6 +672,20 @@ function personalblog_category_menu_shortcode() {
 		return '';
 	}
 	
+	// Determine which category should be highlighted
+	$current_category_id = 0;
+	
+	if ( is_category() ) {
+		// On category archive page
+		$current_category_id = get_queried_object_id();
+	} elseif ( is_single() && get_post_type() === 'post' ) {
+		// On single post page - get the first category
+		$post_categories = get_the_category();
+		if ( ! empty( $post_categories ) ) {
+			$current_category_id = $post_categories[0]->term_id;
+		}
+	}
+	
 	ob_start();
 	?>
 	<div class="wp-block-group alignwide site-header__categories">
@@ -681,7 +695,7 @@ function personalblog_category_menu_shortcode() {
 				if ( $category->slug === 'uncategorized' && $category->count === 0 ) {
 					continue;
 				}
-				$current = is_category( $category->term_id ) ? 'current-cat' : '';
+				$current = ( $current_category_id === $category->term_id ) ? 'current-cat' : '';
 				?>
 				<li class="<?php echo esc_attr( $current ); ?>">
 					<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
