@@ -9,6 +9,12 @@ on:
       - ".htaccess"
       - ".github/workflows/deploy-wp-content.yml"
   workflow_dispatch:
+    inputs:
+      force_full_deploy:
+        description: 'Force full deployment (ignore git diff)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -20,10 +26,58 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-      - name: Compress wp-content
+      - name: Detect changed files
+        id: changes
         run: |
-          tar -czf wp-content.tar.gz wp-content .htaccess
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.force_full_deploy }}" == "true" ]]; then
+            echo "Full deployment requested"
+            echo "mode=full" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Manual deployment - checking last commit"
+            git diff --name-only HEAD~1 HEAD > changed_files.txt
+            if [ -s changed_files.txt ]; then
+              echo "mode=incremental" >> $GITHUB_OUTPUT
+            else
+              echo "No changes detected, deploying last commit changes"
+              echo "mode=full" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Automatic deployment - checking changed files"
+            git diff --name-only HEAD~1 HEAD > changed_files.txt
+            echo "mode=incremental" >> $GITHUB_OUTPUT
+          fi
+          
+          if [ -f changed_files.txt ]; then
+            echo "Changed files:"
+            cat changed_files.txt
+          fi
+
+      - name: Compress changed files
+        run: |
+          if [[ "${{ steps.changes.outputs.mode }}" == "full" ]]; then
+            echo "Creating full deployment archive"
+            tar -czf wp-content.tar.gz wp-content .htaccess
+          else
+            echo "Creating incremental deployment archive with changed files only"
+            # Filter files to only include wp-content/** and .htaccess
+            grep -E '^(wp-content/|\.htaccess)' changed_files.txt > deploy_files.txt || true
+            
+            if [ ! -s deploy_files.txt ]; then
+              echo "No wp-content or .htaccess files changed, creating minimal archive"
+              echo ".htaccess" > deploy_files.txt
+            fi
+            
+            echo "Files to deploy:"
+            cat deploy_files.txt
+            
+            # Create archive with only changed files
+            tar -czf wp-content.tar.gz -T deploy_files.txt
+          fi
+          
+          ls -lh wp-content.tar.gz
 
       - name: Upload archive via SCP
         uses: appleboy/scp-action@v0.1.7
@@ -57,6 +111,7 @@ jobs:
               mkdir -p "$DEPLOY_PATH"
             fi
 
+            # Only create backup if wp-content exists and this is a full deployment
             if [ -d "$DEPLOY_PATH/wp-content" ]; then
               echo "Creating backup archive at $BACKUP"
               if ! tar -czf "$BACKUP" -C "$DEPLOY_PATH" wp-content 2>/tmp/wp-content-backup.log; then
@@ -71,26 +126,38 @@ jobs:
             echo "Extracting archive for staging"
             tar --no-same-owner --no-same-permissions -xzf "$ARCHIVE" -C "$TMP_DIR"
 
-            echo "Syncing staged content into $DEPLOY_PATH/wp-content"
-            mkdir -p "$DEPLOY_PATH/wp-content"
-            # Never touch wp-content/uploads because media is managed on production.
-            if ! rsync -rlv --delete \
-              --exclude='uploads/**' \
-              --exclude='mu-plugins/**' \
-              --exclude='cache/**' \
-              --exclude='upgrade/**' \
-              --exclude='uploads/cache/**' \
-              --exclude='advanced-cache.php' \
-              --exclude='object-cache.php' \
-              --exclude='.user.ini' \
-              --omit-dir-times \
-              --no-perms \
-              --no-owner \
-              --no-group \
-              --ignore-errors \
-              --size-only \
-              "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
-              echo "Warning: rsync reported issues during sync. Review output above."
+            # Deploy wp-content if it exists in archive
+            if [ -d "$TMP_DIR/wp-content" ]; then
+              echo "Syncing staged content into $DEPLOY_PATH/wp-content"
+              mkdir -p "$DEPLOY_PATH/wp-content"
+              # Never touch wp-content/uploads because media is managed on production.
+              if ! rsync -rlv --delete \
+                --exclude='uploads/**' \
+                --exclude='mu-plugins/**' \
+                --exclude='cache/**' \
+                --exclude='upgrade/**' \
+                --exclude='uploads/cache/**' \
+                --exclude='advanced-cache.php' \
+                --exclude='object-cache.php' \
+                --exclude='.user.ini' \
+                --omit-dir-times \
+                --no-perms \
+                --no-owner \
+                --no-group \
+                --ignore-errors \
+                --size-only \
+                "$TMP_DIR/wp-content/" "$DEPLOY_PATH/wp-content/"; then
+                echo "Warning: rsync reported issues during sync. Review output above."
+              fi
+            else
+              echo "No wp-content directory in archive, syncing individual files"
+              # For incremental updates, copy individual files
+              find "$TMP_DIR/wp-content" -type f 2>/dev/null | while read file; do
+                rel_path="${file#$TMP_DIR/}"
+                dest="$DEPLOY_PATH/$rel_path"
+                mkdir -p "$(dirname "$dest")"
+                cp -v "$file" "$dest"
+              done
             fi
 
             echo "Deploying .htaccess to root directory"
@@ -98,13 +165,86 @@ jobs:
               cp "$TMP_DIR/.htaccess" "$DEPLOY_PATH/.htaccess"
               echo ".htaccess deployed successfully"
             else
-              echo "Warning: .htaccess not found in archive"
+              echo "Note: .htaccess not found in archive (may not have changed)"
             fi
 
             echo "Cleaning up remote artifacts"
             rm -f "$ARCHIVE"
             rm -rf "$TMP_DIR"
             rm -f /tmp/wp-content-backup.log
+            
+            echo "Deployment completed successfully!"
 
       - name: Remove archive from runner
         run: rm -f wp-content.tar.gz
+
+      - name: Flush WordPress cache
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.GD_SFTP_HOST }}
+          username: ${{ secrets.GD_SFTP_USER }}
+          password: ${{ secrets.GD_SFTP_PASSWORD }}
+          port: ${{ secrets.GD_SFTP_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            
+            REMOTE_PATH="${REMOTE_PATH:-html}"
+            DEPLOY_PATH="$REMOTE_PATH"
+            
+            echo "Flushing WordPress cache..."
+            
+            # Clear WordPress cache directories
+            if [ -d "$DEPLOY_PATH/wp-content/cache" ]; then
+              echo "Removing cache files from wp-content/cache/"
+              find "$DEPLOY_PATH/wp-content/cache" -type f -delete 2>/dev/null || true
+              echo "✅ Cache directory cleared"
+            fi
+            
+            # Clear object cache if exists
+            if [ -f "$DEPLOY_PATH/wp-content/object-cache.php" ]; then
+              echo "Object cache file detected (likely Redis/Memcached)"
+            fi
+            
+            # Clear transients via WP-CLI if available
+            if command -v wp &> /dev/null; then
+              echo "WP-CLI detected, flushing transients and cache..."
+              cd "$DEPLOY_PATH" || exit 1
+              wp cache flush --allow-root 2>/dev/null || echo "Note: WP-CLI cache flush not available"
+              wp transient delete --all --allow-root 2>/dev/null || echo "Note: WP-CLI transient delete not available"
+              echo "✅ WordPress cache flushed via WP-CLI"
+            else
+              echo "Note: WP-CLI not available, only file cache cleared"
+            fi
+            
+            # Touch wp-config.php to update timestamp (triggers some cache invalidation)
+            if [ -f "$DEPLOY_PATH/wp-config.php" ]; then
+              touch "$DEPLOY_PATH/wp-config.php"
+              echo "✅ wp-config.php timestamp updated"
+            fi
+            
+            echo "✅ WordPress cache flush completed!"
+        continue-on-error: true
+        env:
+          REMOTE_PATH: ${{ secrets.GD_REMOTE_PATH }}
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode**: ${{ steps.changes.outputs.mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ steps.changes.outputs.mode }}" == "incremental" && -f deploy_files.txt ]]; then
+            echo "### 📝 Files Deployed" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat deploy_files.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### 📦 Full deployment completed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Deployment completed successfully!" >> $GITHUB_STEP_SUMMARY
