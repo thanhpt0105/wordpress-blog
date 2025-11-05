@@ -1136,3 +1136,73 @@ function acme_add_nocache_headers() {
 	header( 'Cache-Control: public, max-age=300, must-revalidate' ); // Cache for 5 minutes, then revalidate
 }
 add_action( 'send_headers', 'acme_add_nocache_headers' );
+
+/**
+ * Render the category menu in the header using wp_body_open hook.
+ */
+function acme_inject_category_menu() {
+	// Only inject on front-end
+	if ( is_admin() ) {
+		return;
+	}
+	
+	// Check if we're in the header context by looking for the pattern marker
+	if ( did_action( 'wp_head' ) && ! did_action( 'wp_footer' ) ) {
+		// Output JavaScript to inject the menu after page load
+		add_action( 'wp_footer', 'acme_render_category_menu_script', 1 );
+	}
+}
+add_action( 'wp_body_open', 'acme_inject_category_menu' );
+
+/**
+ * Output JavaScript to replace the placeholder with the actual category menu.
+ */
+function acme_render_category_menu_script() {
+	$categories = acme_get_categories_with_posts();
+	
+	if ( empty( $categories ) ) {
+		return;
+	}
+	
+	$current_cat_id = 0;
+	if ( is_category() ) {
+		$current_cat_id = get_queried_object_id();
+	} elseif ( is_single() ) {
+		$post_categories = get_the_category();
+		if ( ! empty( $post_categories ) ) {
+			$current_cat_id = $post_categories[0]->term_id;
+		}
+	}
+	
+	ob_start();
+	?>
+	<ul class="site-header__category-list">
+		<?php foreach ( $categories as $category ) : ?>
+			<li class="<?php echo ( $current_cat_id === $category->term_id ) ? 'current-cat' : ''; ?>">
+				<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
+					<?php echo esc_html( $category->name ); ?>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+	<?php
+	$menu_html = ob_get_clean();
+	$menu_html_escaped = wp_json_encode( $menu_html );
+	?>
+	<script>
+	(function() {
+		// Find the placeholder and replace it with the actual menu
+		const containers = document.querySelectorAll('.site-header__categories');
+		const menuHTML = <?php echo $menu_html_escaped; ?>;
+		
+		containers.forEach(function(container) {
+			// Check if it contains the placeholder text
+			if (container.textContent.includes('[acme_category_menu]') || container.textContent.trim() === '') {
+				container.innerHTML = menuHTML;
+			}
+		});
+	})();
+	</script>
+	<?php
+}
+
