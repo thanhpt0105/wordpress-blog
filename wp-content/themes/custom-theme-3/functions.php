@@ -1027,230 +1027,43 @@ function acme_register_rest_routes() {
 add_action( 'rest_api_init', 'acme_register_rest_routes' );
 
 /**
- * Get categories with posts for the category menu.
- * Uses a transient cache that is automatically invalidated when posts are published.
- *
- * @return array Array of category objects with posts.
+ * Add cache control headers to prevent overzealous caching on CDN/hosting providers.
+ * This ensures dynamic content updates properly.
  */
-function acme_get_categories_with_posts() {
-	$cache_key = 'acme_categories_with_posts';
-	$categories = get_transient( $cache_key );
-
-	if ( false === $categories ) {
-		$categories = get_categories(
-			array(
-				'orderby'    => 'name',
-				'order'      => 'ASC',
-				'hide_empty' => true, // Only show categories with posts
-			)
-		);
-
-		// Cache for 12 hours (will be cleared when posts are published)
-		set_transient( $cache_key, $categories, 12 * HOUR_IN_SECONDS );
-	}
-
-	return $categories;
-}
-
-/**
- * Clear category menu cache when a post is published, updated, or deleted.
- *
- * @param int     $post_id Post ID.
- * @param WP_Post $post    Post object.
- */
-function acme_clear_category_menu_cache( $post_id, $post = null ) {
-	// Only clear cache for published posts
-	if ( $post && 'post' === $post->post_type && 'publish' === $post->post_status ) {
-		delete_transient( 'acme_categories_with_posts' );
-	}
-}
-add_action( 'save_post', 'acme_clear_category_menu_cache', 10, 2 );
-add_action( 'delete_post', 'acme_clear_category_menu_cache', 10, 2 );
-add_action( 'wp_trash_post', 'acme_clear_category_menu_cache', 10, 1 );
-
-/**
- * Also clear cache when categories are edited or deleted.
- *
- * @param int $term_id Term ID.
- */
-function acme_clear_category_menu_cache_on_term_change( $term_id ) {
-	$term = get_term( $term_id );
-	if ( $term && 'category' === $term->taxonomy ) {
-		delete_transient( 'acme_categories_with_posts' );
-	}
-}
-add_action( 'edited_category', 'acme_clear_category_menu_cache_on_term_change' );
-add_action( 'delete_category', 'acme_clear_category_menu_cache_on_term_change' );
-
-/**
- * Shortcode to display the category menu.
- * Usage: [acme_category_menu]
- *
- * @return string HTML markup for the category menu.
- */
-function acme_category_menu_shortcode() {
-	$categories = acme_get_categories_with_posts();
-
-	if ( empty( $categories ) ) {
-		return '';
-	}
-
-	$current_cat_id = 0;
-	if ( is_category() ) {
-		$current_cat_id = get_queried_object_id();
-	} elseif ( is_single() ) {
-		// Get the first category of the current post
-		$post_categories = get_the_category();
-		if ( ! empty( $post_categories ) ) {
-			$current_cat_id = $post_categories[0]->term_id;
-		}
-	}
-
-	ob_start();
-	?>
-	<ul class="site-header__category-list">
-		<?php foreach ( $categories as $category ) : ?>
-			<li class="<?php echo ( $current_cat_id === $category->term_id ) ? 'current-cat' : ''; ?>">
-				<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
-					<?php echo esc_html( $category->name ); ?>
-				</a>
-			</li>
-		<?php endforeach; ?>
-	</ul>
-	<?php
-	return ob_get_clean();
-}
-add_shortcode( 'acme_category_menu', 'acme_category_menu_shortcode' );
-
-/**
- * Add nocache headers to prevent overzealous caching on hosting providers like GoDaddy.
- * This ensures dynamic content (like the category menu) updates properly.
- */
-function acme_add_nocache_headers() {
-	// Don't add nocache headers in admin or for static assets
+function acme_add_cache_headers() {
+	// Don't add headers in admin or for AJAX requests
 	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 		return;
 	}
 
-	// Remove any existing cache headers that might have been set
 	if ( ! headers_sent() ) {
+		// Remove any existing cache headers
 		header_remove('Cache-Control');
-		header_remove('Pragma');
 		header_remove('Expires');
 		
-		// Set short cache time with revalidation - use true to REPLACE not append
+		// Set 5-minute cache with revalidation
 		header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
 		header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 300 ) . ' GMT', true );
-		
-		// Add Cloudflare-specific header to respect our cache settings
 		header( 'CDN-Cache-Control: max-age=300', true );
 	}
 }
-add_action( 'send_headers', 'acme_add_nocache_headers', 999 ); // Very late priority to override everything
+add_action( 'send_headers', 'acme_add_cache_headers', 999 );
+add_action( 'template_redirect', 'acme_add_cache_headers', 999 );
 
 /**
- * Also set headers using template_redirect as a backup
- */
-function acme_add_nocache_headers_backup() {
-	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-		return;
-	}
-	
-	if ( ! headers_sent() ) {
-		// Set headers again on template_redirect
-		header_remove('Cache-Control');
-		header( 'Cache-Control: public, max-age=300, s-maxage=300, must-revalidate', true );
-		header( 'CDN-Cache-Control: max-age=300', true );
-	}
-}
-add_action( 'template_redirect', 'acme_add_nocache_headers_backup', 999 ); // Very late priority
-
-/**
- * Add a query parameter to force cache bypass and reload.
- * Usage: https://tuno.world/?force_refresh=1
+ * Add force refresh parameter for cache testing.
+ * Usage: ?force_refresh=1
  */
 function acme_handle_force_refresh() {
-	if ( isset( $_GET['force_refresh'] ) && ! is_admin() ) {
-		// Set no-cache headers
+	if ( isset( $_GET['force_refresh'] ) && ! is_admin() && ! headers_sent() ) {
 		header( 'Cache-Control: no-cache, no-store, must-revalidate', true );
 		header( 'Pragma: no-cache', true );
 		header( 'Expires: 0', true );
 		header( 'CDN-Cache-Control: no-cache', true );
 		
-		// Add a comment in HTML to confirm this is working
 		add_action( 'wp_footer', function() {
-			echo '<!-- Force refresh active - cache bypassed -->';
+			echo '<!-- Force refresh active -->';
 		}, 999 );
 	}
 }
 add_action( 'init', 'acme_handle_force_refresh', 1 );
-
-/**
- * Render the category menu in the header using wp_body_open hook.
- */
-function acme_inject_category_menu() {
-	// Only inject on front-end
-	if ( is_admin() ) {
-		return;
-	}
-	
-	// Check if we're in the header context by looking for the pattern marker
-	if ( did_action( 'wp_head' ) && ! did_action( 'wp_footer' ) ) {
-		// Output JavaScript to inject the menu after page load
-		add_action( 'wp_footer', 'acme_render_category_menu_script', 1 );
-	}
-}
-add_action( 'wp_body_open', 'acme_inject_category_menu' );
-
-/**
- * Output JavaScript to replace the placeholder with the actual category menu.
- */
-function acme_render_category_menu_script() {
-	$categories = acme_get_categories_with_posts();
-	
-	if ( empty( $categories ) ) {
-		return;
-	}
-	
-	$current_cat_id = 0;
-	if ( is_category() ) {
-		$current_cat_id = get_queried_object_id();
-	} elseif ( is_single() ) {
-		$post_categories = get_the_category();
-		if ( ! empty( $post_categories ) ) {
-			$current_cat_id = $post_categories[0]->term_id;
-		}
-	}
-	
-	ob_start();
-	?>
-	<ul class="site-header__category-list">
-		<?php foreach ( $categories as $category ) : ?>
-			<li class="<?php echo ( $current_cat_id === $category->term_id ) ? 'current-cat' : ''; ?>">
-				<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
-					<?php echo esc_html( $category->name ); ?>
-				</a>
-			</li>
-		<?php endforeach; ?>
-	</ul>
-	<?php
-	$menu_html = ob_get_clean();
-	$menu_html_escaped = wp_json_encode( $menu_html );
-	?>
-	<script>
-	(function() {
-		// Find the placeholder and replace it with the actual menu
-		const containers = document.querySelectorAll('.site-header__categories');
-		const menuHTML = <?php echo $menu_html_escaped; ?>;
-		
-		containers.forEach(function(container) {
-			// Check if it contains the placeholder text
-			if (container.textContent.includes('[acme_category_menu]') || container.textContent.trim() === '') {
-				container.innerHTML = menuHTML;
-			}
-		});
-	})();
-	</script>
-	<?php
-}
-
