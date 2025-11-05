@@ -95,6 +95,8 @@ function acme_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'acme_enqueue_assets' );
 
+require_once __DIR__ . '/inc/user-avatar.php';
+
 /**
  * Inline a tiny script that applies the persisted color mode class
  * before the main module executes to avoid a flash of light theme.
@@ -1023,3 +1025,114 @@ function acme_register_rest_routes() {
 	);
 }
 add_action( 'rest_api_init', 'acme_register_rest_routes' );
+
+/**
+ * Get categories with posts for the category menu.
+ * Uses a transient cache that is automatically invalidated when posts are published.
+ *
+ * @return array Array of category objects with posts.
+ */
+function acme_get_categories_with_posts() {
+	$cache_key = 'acme_categories_with_posts';
+	$categories = get_transient( $cache_key );
+
+	if ( false === $categories ) {
+		$categories = get_categories(
+			array(
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+				'hide_empty' => true, // Only show categories with posts
+			)
+		);
+
+		// Cache for 12 hours (will be cleared when posts are published)
+		set_transient( $cache_key, $categories, 12 * HOUR_IN_SECONDS );
+	}
+
+	return $categories;
+}
+
+/**
+ * Clear category menu cache when a post is published, updated, or deleted.
+ *
+ * @param int     $post_id Post ID.
+ * @param WP_Post $post    Post object.
+ */
+function acme_clear_category_menu_cache( $post_id, $post = null ) {
+	// Only clear cache for published posts
+	if ( $post && 'post' === $post->post_type && 'publish' === $post->post_status ) {
+		delete_transient( 'acme_categories_with_posts' );
+	}
+}
+add_action( 'save_post', 'acme_clear_category_menu_cache', 10, 2 );
+add_action( 'delete_post', 'acme_clear_category_menu_cache', 10, 2 );
+add_action( 'wp_trash_post', 'acme_clear_category_menu_cache', 10, 1 );
+
+/**
+ * Also clear cache when categories are edited or deleted.
+ *
+ * @param int $term_id Term ID.
+ */
+function acme_clear_category_menu_cache_on_term_change( $term_id ) {
+	$term = get_term( $term_id );
+	if ( $term && 'category' === $term->taxonomy ) {
+		delete_transient( 'acme_categories_with_posts' );
+	}
+}
+add_action( 'edited_category', 'acme_clear_category_menu_cache_on_term_change' );
+add_action( 'delete_category', 'acme_clear_category_menu_cache_on_term_change' );
+
+/**
+ * Shortcode to display the category menu.
+ * Usage: [acme_category_menu]
+ *
+ * @return string HTML markup for the category menu.
+ */
+function acme_category_menu_shortcode() {
+	$categories = acme_get_categories_with_posts();
+
+	if ( empty( $categories ) ) {
+		return '';
+	}
+
+	$current_cat_id = 0;
+	if ( is_category() ) {
+		$current_cat_id = get_queried_object_id();
+	} elseif ( is_single() ) {
+		// Get the first category of the current post
+		$post_categories = get_the_category();
+		if ( ! empty( $post_categories ) ) {
+			$current_cat_id = $post_categories[0]->term_id;
+		}
+	}
+
+	ob_start();
+	?>
+	<ul class="site-header__category-list">
+		<?php foreach ( $categories as $category ) : ?>
+			<li class="<?php echo ( $current_cat_id === $category->term_id ) ? 'current-cat' : ''; ?>">
+				<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
+					<?php echo esc_html( $category->name ); ?>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+	<?php
+	return ob_get_clean();
+}
+add_shortcode( 'acme_category_menu', 'acme_category_menu_shortcode' );
+
+/**
+ * Add nocache headers to prevent overzealous caching on hosting providers like GoDaddy.
+ * This ensures dynamic content (like the category menu) updates properly.
+ */
+function acme_add_nocache_headers() {
+	// Don't add nocache headers in admin or for static assets
+	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		return;
+	}
+
+	// Allow caching, but ensure freshness is checked
+	header( 'Cache-Control: public, max-age=300, must-revalidate' ); // Cache for 5 minutes, then revalidate
+}
+add_action( 'send_headers', 'acme_add_nocache_headers' );

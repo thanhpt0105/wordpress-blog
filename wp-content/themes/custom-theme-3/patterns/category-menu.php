@@ -5,9 +5,36 @@
  * Categories: acme-layouts
  * Description: Horizontal category navigation strip for the header.
  */
+
+// Get categories with posts
+$categories = acme_get_categories_with_posts();
+
+if ( empty( $categories ) ) {
+	return;
+}
+
+$current_cat_id = 0;
+if ( is_category() ) {
+	$current_cat_id = get_queried_object_id();
+} elseif ( is_single() ) {
+	$post_categories = get_the_category();
+	if ( ! empty( $post_categories ) ) {
+		$current_cat_id = $post_categories[0]->term_id;
+	}
+}
 ?>
 <!-- wp:group {"align":"wide","className":"site-header__categories","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center","orientation":"horizontal"},"style":{"spacing":{"padding":{"top":"0.5rem","bottom":"0.5rem"}}}} -->
 <div class="wp-block-group alignwide site-header__categories">
-	<!-- wp:categories {"showPostCounts":false,"showHierarchy":false,"displayAsDropdown":false,"className":"site-header__category-list"} /-->
+	<!-- wp:html -->
+	<ul class="site-header__category-list">
+		<?php foreach ( $categories as $category ) : ?>
+			<li class="<?php echo ( $current_cat_id === $category->term_id ) ? 'current-cat' : ''; ?>">
+				<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
+					<?php echo esc_html( $category->name ); ?>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+	<!-- /wp:html -->
 </div>
 <!-- /wp:group -->
