@@ -1143,23 +1143,30 @@ add_action( 'admin_post_personalblog_contact_form', 'personalblog_handle_contact
 
 /**
  * Display contact form messages.
+ *
+ * @param string $content The post content.
+ * @return string Modified content with contact form messages.
  */
-function personalblog_contact_form_messages() {
-	if ( ! isset( $_GET['contact'] ) ) {
-		return;
+function personalblog_contact_form_messages( $content ) {
+	// Only show on contact page
+	if ( ! is_page( 'contact' ) || ! isset( $_GET['contact'] ) ) {
+		return $content;
 	}
 
 	$status = sanitize_text_field( $_GET['contact'] );
 	$messages = array(
-'success'       => __( 'Thank you! Your message has been sent successfully. I\'ll get back to you soon.', 'personal-blog' ),
-'error'         => __( 'Please fill in all required fields.', 'personal-blog' ),
-'invalid_email' => __( 'Please enter a valid email address.', 'personal-blog' ),
-'failed'        => __( 'Sorry, there was an error sending your message. Please try again later or contact me directly via email.', 'personal-blog' ),
-);
+		'success'       => __( 'Thank you! Your message has been sent successfully. I\'ll get back to you soon.', 'personal-blog' ),
+		'error'         => __( 'Please fill in all required fields.', 'personal-blog' ),
+		'invalid_email' => __( 'Please enter a valid email address.', 'personal-blog' ),
+		'failed'        => __( 'Sorry, there was an error sending your message. Please try again later or contact me directly via email.', 'personal-blog' ),
+	);
 
-if ( isset( $messages[ $status ] ) ) {
-$class = $status === 'success' ? 'personalblog-contact-success' : 'personalblog-contact-error';
-echo '<div class="' . esc_attr( $class ) . '">' . esc_html( $messages[ $status ] ) . '</div>';
+	if ( isset( $messages[ $status ] ) ) {
+		$class = $status === 'success' ? 'personalblog-contact-success' : 'personalblog-contact-error';
+		$message_html = '<div class="' . esc_attr( $class ) . '">' . esc_html( $messages[ $status ] ) . '</div>';
+		$content = $message_html . $content;
+	}
+	
+	return $content;
 }
-}
-add_action( 'the_content', 'personalblog_contact_form_messages', 5 );
+add_filter( 'the_content', 'personalblog_contact_form_messages', 5 );
