@@ -199,7 +199,7 @@ jobs:
       - name: Remove archive from runner
         run: rm -f wp-content.tar.gz
 
-      - name: Flush WordPress cache
+      - name: Flush WordPress and GoDaddy cache
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.GD_SFTP_HOST }}
@@ -212,38 +212,59 @@ jobs:
             REMOTE_PATH="${REMOTE_PATH:-html}"
             DEPLOY_PATH="$REMOTE_PATH"
             
-            echo "Flushing WordPress cache..."
+            echo "==========================================="
+            echo "🔄 Flushing WordPress & GoDaddy Cache"
+            echo "==========================================="
             
-            # Clear WordPress cache directories
+            # 1. Clear WordPress cache directories
             if [ -d "$DEPLOY_PATH/wp-content/cache" ]; then
               echo "Removing cache files from wp-content/cache/"
               find "$DEPLOY_PATH/wp-content/cache" -type f -delete 2>/dev/null || true
-              echo "✅ Cache directory cleared"
+              echo "✅ WordPress cache directory cleared"
             fi
             
-            # Clear object cache if exists
+            # 2. Clear object cache if exists
             if [ -f "$DEPLOY_PATH/wp-content/object-cache.php" ]; then
-              echo "Object cache file detected (likely Redis/Memcached)"
+              echo "📝 Object cache file detected (Redis/Memcached)"
             fi
             
-            # Clear transients via WP-CLI if available
+            # 3. Flush GoDaddy cache via WP-CLI
             if command -v wp &> /dev/null; then
-              echo "WP-CLI detected, flushing transients and cache..."
+              echo "WP-CLI detected, flushing all caches..."
               cd "$DEPLOY_PATH" || exit 1
-              wp cache flush --allow-root 2>/dev/null || echo "Note: WP-CLI cache flush not available"
-              wp transient delete --all --allow-root 2>/dev/null || echo "Note: WP-CLI transient delete not available"
-              echo "✅ WordPress cache flushed via WP-CLI"
+              
+              # Flush WordPress cache
+              wp cache flush --allow-root 2>/dev/null && echo "✅ WP cache flushed" || echo "⚠️  WP cache flush unavailable"
+              
+              # Delete all transients
+              wp transient delete --all --allow-root 2>/dev/null && echo "✅ Transients cleared" || echo "⚠️  Transient delete unavailable"
+              
+              # Flush GoDaddy cache using their built-in function
+              # This uses the same mechanism as "GoDaddy Quick Link -> Flush cache" in wp-admin
+              echo "Attempting to flush GoDaddy cache..."
+              wp eval 'if (function_exists("ban_url")) { ban_url(home_url()); echo "✅ GoDaddy cache flushed via ban_url()\n"; } else if (class_exists("GD_Cache") && method_exists("GD_Cache", "ban")) { GD_Cache::ban(home_url()); echo "✅ GoDaddy cache flushed via GD_Cache::ban()\n"; } else { echo "⚠️  GoDaddy cache functions not available\n"; }' --allow-root 2>/dev/null || echo "⚠️  GoDaddy cache flush not available"
+              
+              echo "✅ All caches flushed via WP-CLI"
             else
-              echo "Note: WP-CLI not available, only file cache cleared"
+              echo "⚠️  WP-CLI not available"
             fi
             
-            # Touch wp-config.php to update timestamp (triggers some cache invalidation)
+            # 4. Touch wp-config.php to update timestamp
             if [ -f "$DEPLOY_PATH/wp-config.php" ]; then
               touch "$DEPLOY_PATH/wp-config.php"
               echo "✅ wp-config.php timestamp updated"
             fi
             
-            echo "✅ WordPress cache flush completed!"
+            # 5. Alternative method: Delete GoDaddy's cache files directly if present
+            if [ -d "$DEPLOY_PATH/.cache" ]; then
+              echo "Found .cache directory, removing..."
+              rm -rf "$DEPLOY_PATH/.cache" 2>/dev/null || true
+              echo "✅ .cache directory removed"
+            fi
+            
+            echo "==========================================="
+            echo "✅ Cache flush completed!"
+            echo "==========================================="
         continue-on-error: true
         env:
           REMOTE_PATH: ${{ secrets.GD_REMOTE_PATH }}
